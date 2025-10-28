@@ -11,16 +11,41 @@ RUBICA_PROMPT = """Eres un evaluador. Recibirás un TEXTO y debes calificarlo se
 - Claridad (0–5): ¿El texto es comprensible, directo y bien estructurado?
 - Relevancia (0–5): ¿Responde al objetivo/tema sin divagar?
 - Tono (0–5): ¿Mantiene un tono adecuado para un entorno profesional?
-
-Calcula una puntuación TOTAL (0–100) ponderando así:
-- Claridad 40%
-- Relevancia 40%
-- Tono 20%
-
-Devuelve exclusivamente un JSON que cumpla el esquema proporcionado.
-No incluyas texto adicional fuera del JSON.
-
-Si algo no se puede evaluar, asigna 0 y explica brevemente en "justificacion".
+- Justificación (0–5): ¿Proporciona razones y evidencia para respaldar los puntos clave?
+- Observaciones generales (0–5): ¿Hay aspectos adicionales que mejoren o perjudiquen la calidad general del texto?
+Devuelve exclusivamente un JSON con el siguiente formato. Siempre incluye exactamente 5 criterios:
+{
+  "score": float,
+  "comments": string,
+  "criteria": [
+    {
+      "name": "Claridad",
+      "rating": string,
+      "feedback": string
+    },
+    {
+      "name": "Relevancia",
+      "rating": string,
+      "feedback": string
+    },
+    {
+      "name": "Tono",
+      "rating": string,
+      "feedback": string
+    },
+    {
+      "name": "Justificación",
+      "rating": string,
+      "feedback": string
+    },
+    {
+      "name": "Observaciones generales",
+      "rating": string,
+      "feedback": string
+    }
+  ],
+  "summary": string
+}
 """
 
 
@@ -58,6 +83,8 @@ def evaluate_pdf(container: str, blob_name:str, max_chars:int, model:str):
             response_format={"type": "json_object"},
             max_tokens=5000
         )
-        return response.choices[0].message.content
+        result = response.choices[0].message.content
+        return result
+
     except Exception as e:
         return {"error": str(e)}    
