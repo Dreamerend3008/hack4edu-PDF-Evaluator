@@ -181,6 +181,20 @@
           const formData = new FormData();
           formData.append('file', this.file);
 
+<<<<<<< HEAD
+
+          //Fetch para upload pdf
+          const URL = 'https://fahack4edu-b7cfhhbtczb0gndq.westus3-01.azurewebsites.net/api/uploadPDF'
+          
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 100000); // 100
+          
+          //Manejo de res
+          
+          
+          //Subida de pdf
+=======
+>>>>>>> parent of 3d58b2d (Fetch integration)
           try {
             const res = await fetch('aqui va el fetch pero sinceramente me dio miedito dejarlo :c', {
               method: 'POST',
@@ -204,6 +218,73 @@
           }
         },
 
+<<<<<<< HEAD
+        async testFetch() {
+          this.error = '';
+          this.response = 'Realizando prueba de conexión...';
+
+          const url = 'https://fahack4edu-b7cfhhbtczb0gndq.westus3-01.azurewebsites.net/api/health';
+
+          // Timeout con AbortController
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 100000); // 10s
+
+          try {
+            const res = await fetch(url, { method: 'GET', signal: controller.signal });
+
+            clearTimeout(timeoutId);
+
+            // Mostrar status y algunas cabeceras para depuración
+            const info = {
+              status: res.status,
+              statusText: res.statusText,
+              contentType: res.headers.get('content-type') || ''
+            };
+
+            if (!res.ok) {
+              // intenta obtener cuerpo para ver mensaje de error del servidor
+              let textBody = '';
+              try {
+                textBody = await res.text();
+              } catch (e) {
+                textBody = '<no se pudo leer el body de error>';
+              }
+              this.response = JSON.stringify({ info, body: textBody }, null, 2);
+              this.error = `Respuesta no OK: ${res.status} ${res.statusText}`;
+              return;
+            }
+
+            // Si es JSON, parsea; si no, devuelve texto
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+              const data = await res.json();
+              this.response = JSON.stringify({ info, data }, null, 2);
+            } else {
+              const text = await res.text();
+              this.response = JSON.stringify({ info, text }, null, 2);
+            }
+          } catch (err) {
+            clearTimeout(timeoutId);
+
+            // Mensajes comunes: abort (timeout), TypeError (CORS o red), etc.
+            if (err.name === 'AbortError') {
+              this.error = 'Error en el test fetch: tiempo de espera agotado (timeout).';
+            } else if (err instanceof TypeError) {
+              // TypeError suele indicar fallo de red o CORS cuando fetch no puede completar
+              this.error = `Error en el test fetch: fallo de red o CORS — ${err.message}`;
+              // para depuración avanzada puedes abrir la consola del navegador y mirar la pestaña Network
+            } else {
+              this.error = `Error en el test fetch: ${err.message}`;
+            }
+
+            // Opcional: mostrar stack en response para depuración local (puedes quitarlo después)
+            this.response = (err && err.stack) ? String(err.stack) : '';
+          }
+        },
+
+
+=======
+>>>>>>> parent of 3d58b2d (Fetch integration)
         reset() {
           this.file = null;
           this.response = '';
