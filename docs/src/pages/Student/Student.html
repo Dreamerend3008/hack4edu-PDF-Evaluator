@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Alpine.js (para la lógica reactiva) -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <title>Portal Estudiantil</title>
+    
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-800 text-white font-mono min-h-screen">
+    <div x-data="{
+        studentCode: '',
+        isValidCode: false,
+        studentName: '',
+        cursoActual: '',
+        showError: false,
+        loading: false,
+        
+        validateCode() {
+            this.loading = true;
+            this.showError = false;
+            
+            // Simular validación con una pequeña demora
+            setTimeout(() => {
+                const validCodes = {
+                    '111111': { nombre: 'Juan Baquero', curso: '11-1' },
+                    '222222': { nombre: 'Juan Bravo', curso: '11-2' },
+                    '333333': { nombre: 'David Davila', curso: '11-3' }
+                };
+                
+                if (validCodes[this.studentCode]) {
+                    this.studentName = validCodes[this.studentCode].nombre;
+                    this.cursoActual = validCodes[this.studentCode].curso;
+                    this.isValidCode = true;
+                } else {
+                    this.showError = true;
+                }
+                
+                this.loading = false;
+            }, 800);
+        },
+        
+        resetForm() {
+            this.studentCode = '';
+            this.isValidCode = false;
+            this.studentName = '';
+            this.cursoActual = '';
+            this.showError = false;
+        }
+    }" class="min-h-screen flex items-center justify-center p-4">
+        
+        <!-- Pantalla de ingreso de código -->
+        <div x-show="!isValidCode" class="max-w-md w-full bg-blue-800/30 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden fade-in p-8 border border-blue-600/30">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2">PDFSSOR</h1>
+                <p class="text-blue-200">Ingresa tu código para acceder</p>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label for="studentCode" class="block text-blue-200 font-semibold text-sm mb-2">
+                        Código de Estudiante
+                    </label>
+                    <div class="relative">
+                        <input
+                            x-model="studentCode"
+                            type="text"
+                            id="studentCode"
+                            class="block w-full rounded-lg py-3 px-4 bg-blue-900/50 border border-blue-600 focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                            placeholder="Ej: 000000"
+                            :class="showError ? 'border-red-500' : ''"
+                            @keyup.enter="validateCode"
+                        />
+                        <div x-show="showError" class="absolute right-3 top-3 text-red-400">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <p x-show="showError" class="mt-2 text-sm text-red-400">Código incorrecto. Inténtalo de nuevo.</p>
+                    <p class="mt-2 text-sm text-blue-300">Códigos válidos: 111111,222222,333333</p>
+                </div>
+                
+                <button
+                    @click="validateCode"
+                    :disabled="loading || !studentCode"
+                    :class="(loading || !studentCode) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-500 transform hover:scale-105'"
+                    class="w-full py-3 bg-blue-600 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                >
+                    <span x-show="!loading">Acceder al Portal</span>
+                    <span x-show="loading" class="flex items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Verificando...
+                    </span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Pantalla de bienvenida después del login -->
+        <div x-show="isValidCode" x-transition class="w-full max-w-6xl">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Columna izquierda - Saludo -->
+                <div class="lg:w-1/2 bg-blue-800/30 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border border-blue-600/30 slide-in-left">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold">¡Bienvenido!</h2>
+                            <p class="text-blue-200" x-text="studentName"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-900/50 rounded-xl p-6 mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Información del Estudiante</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between border-b border-blue-700/50 pb-2">
+                                <span class="text-blue-300">Código:</span>
+                                <span x-text="studentCode" class="font-mono"></span>
+                            </div>
+                            <div class="flex justify-between border-b border-blue-700/50 pb-2">
+                                <span class="text-blue-300">Salón:</span>
+                                <span x-text="cursoActual" class="font-mono"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-blue-300">Estado:</span>
+                                <span class="text-green-400">Activo</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button 
+                        @click="resetForm"
+                        class="flex items-center text-blue-300 hover:text-white transition"
+                    >
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Cerrar sesión
+                    </button>
+                </div>
+                
+                <!-- Columna derecha - Opciones -->
+                <div class="lg:w-1/2 bg-blue-800/30 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border border-blue-600/30 slide-in-right">
+                    <h2 class="text-2xl font-bold mb-8 text-center">¿Qué deseas hacer?</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Subir actividad -->
+                        <a href="../Student/pdf.html" class="block">
+                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold mb-2">Subir Actividad</h3>
+                                <p class="text-blue-100 text-sm">Envía tus tareas, proyectos y actividades académicas</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Revisar notas -->
+                        <button class="bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2">Revisar Notas Parciales</h3>
+                            <p class="text-green-100 text-sm">Consulta tus calificaciones y progreso académico</p>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-8 bg-blue-900/50 rounded-xl p-4">
+                        <h3 class="font-semibold mb-2 text-blue-200">Recordatorio importante</h3>
+                        <p class="text-sm text-blue-300">
+                            Recuerda que las actividades deben subirse antes de la fecha límite establecida por el profesor.
+                            Las notas parciales se actualizan semanalmente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
