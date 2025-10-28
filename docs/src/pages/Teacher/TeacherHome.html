@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Alpine.js -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <title>Portal Docente</title>
+    
+    <style>
+        @font-face {
+            font-family: 'CaskaydiaMono';
+            src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        body {
+            font-family: 'CaskaydiaMono', monospace;
+            background-color: #20232a;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .container-box {
+            background-color: #1d2e33;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .input-field {
+            background-color: #1b3847;
+            border: 2px solid #1d6489;
+            color: #d5d2c9;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #326342;
+            box-shadow: 0 0 0 3px rgba(50, 99, 66, 0.1);
+        }
+        
+        .btn-teacher {
+            background: linear-gradient(135deg, #326342 0%, #005b52 100%);
+            color: #d5d2c9;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-teacher:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(50, 99, 66, 0.4);
+        }
+        
+        .btn-teacher:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-logout {
+            background-color: #5b0009;
+            color: #d5d2c9;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-logout:hover {
+            background-color: #7a000c;
+            transform: scale(1.05);
+        }
+        
+        .activity-card {
+            background-color: #1b3847;
+            border: 1px solid #1d6489;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .activity-card:hover {
+            border-color: #326342;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(50, 99, 66, 0.2);
+        }
+        
+        .accent-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #326342 0%, #005b52 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(50, 99, 66, 0.3);
+        }
+    </style>
+</head>
+
+<body class="font-mono min-h-screen" style="background-color: #20232a; color: #d5d2c9;">
+    <div x-data="{
+        teacherCode: '',
+        isValidCode: false,
+        teacherName: '',
+        curso: '',
+        showError: false,
+        loading: false,
+        activities: [],
+
+        init() {
+            // Restaurar sesión si existe
+            try {
+                const saved = localStorage.getItem('teacherSession');
+                if (saved) {
+                    const t = JSON.parse(saved);
+                    this.teacherCode = t.teacherCode || '';
+                    this.teacherName = t.teacherName || '';
+                    this.curso = t.curso || '';
+                    this.isValidCode = !!(this.teacherCode && this.teacherName);
+                    this.loadActivities();
+                }
+            } catch (e) {
+                console.warn('No se pudo restaurar la sesión del profesor:', e);
+            }
+        },
+        
+        validateCode() {
+            this.loading = true;
+            this.showError = false;
+            
+            // Simular validación con una pequeña demora
+            setTimeout(() => {
+                const validCodes = {
+                    'PROF001': { nombre: 'Prof. María García', curso: '11-1' },
+                    'PROF002': { nombre: 'Prof. Carlos Ruiz', curso: '11-2' },
+                    'PROF003': { nombre: 'Prof. Ana Torres', curso: '11-3' }
+                };
+                
+                if (validCodes[this.teacherCode]) {
+                    this.teacherName = validCodes[this.teacherCode].nombre;
+                    this.curso = validCodes[this.teacherCode].curso;
+                    this.isValidCode = true;
+                    
+                    // Guardar sesión persistente
+                    try {
+                        localStorage.setItem('teacherSession', JSON.stringify({
+                            teacherCode: this.teacherCode,
+                            teacherName: this.teacherName,
+                            curso: this.curso,
+                            ts: Date.now()
+                        }));
+                    } catch (e) {
+                        console.warn('No se pudo guardar la sesión del profesor:', e);
+                    }
+                    
+                    this.loadActivities();
+                } else {
+                    this.showError = true;
+                }
+                
+                this.loading = false;
+            }, 800);
+        },
+        
+        loadActivities() {
+            try {
+                const saved = localStorage.getItem('teacherActivities_' + this.teacherCode);
+                if (saved) {
+                    this.activities = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('No se pudieron cargar las actividades:', e);
+                this.activities = [];
+            }
+        },
+        
+        resetForm() {
+            this.teacherCode = '';
+            this.isValidCode = false;
+            this.teacherName = '';
+            this.curso = '';
+            this.showError = false;
+            this.activities = [];
+            // Borrar sesión persistente
+            try { localStorage.removeItem('teacherSession'); } catch {}
+        }
+    }" class="min-h-screen flex items-center justify-center p-4">
+        
+        <!-- Pantalla de ingreso de código -->
+        <div x-show="!isValidCode" class="max-w-md w-full container-box backdrop-blur-sm shadow-2xl overflow-hidden fade-in p-8" style="border: 1px solid #1d6489;">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2" style="color: #d5d2c9;">Portal Docente</h1>
+                <p style="color: #d5d2c9; opacity: 0.8;">Ingresa tu código de profesor</p>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label for="teacherCode" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                        Código de Profesor
+                    </label>
+                    <div class="relative">
+                        <input
+                            x-model="teacherCode"
+                            type="text"
+                            id="teacherCode"
+                            class="input-field block w-full"
+                            placeholder="Ej: PROF001"
+                            :style="showError ? 'border-color: #5b0009;' : ''"
+                            @keyup.enter="validateCode"
+                        />
+                        <div x-show="showError" class="absolute right-3 top-3" style="color: #e3b063;">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <p x-show="showError" class="mt-2 text-sm" style="color: #e3b063;">Código incorrecto. Inténtalo de nuevo.</p>
+                    <p class="mt-2 text-sm" style="color: #d5d2c9; opacity: 0.7;">Códigos válidos: PROF001, PROF002, PROF003</p>
+                </div>
+                
+                <button
+                    @click="validateCode"
+                    :disabled="loading || !teacherCode"
+                    :class="(loading || !teacherCode) ? 'opacity-50 cursor-not-allowed' : ''"
+                    class="btn-teacher w-full py-3 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                >
+                    <span x-show="!loading">Acceder al Portal</span>
+                    <span x-show="loading" class="flex items-center">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5" style="color: #d5d2c9;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Verificando...
+                    </span>
+                </button>
+
+                <a href="../Home/Home.html" class="block">
+                    <button class="btn-logout w-full py-3 rounded-lg text-lg font-semibold transition-all duration-300">
+                        Regresar
+                    </button>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Dashboard del profesor después del login -->
+        <div x-show="isValidCode" x-transition class="w-full max-w-6xl">
+            <div class="flex flex-col gap-8">
+                <!-- Header con información del profesor -->
+                <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-8 slide-in-left" style="border: 1px solid #1d6489;">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="accent-circle">
+                                <svg class="w-8 h-8" style="color: #d5d2c9;" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                                </svg>
+                            </div>
+                            <div class="ml-4">
+                                <h2 class="text-2xl font-bold" style="color: #d5d2c9;">¡Bienvenido!</h2>
+                                <p style="color: #d5d2c9; opacity: 0.9;" x-text="teacherName"></p>
+                                <p class="text-sm" style="color: #d5d2c9; opacity: 0.7;" x-text="'Curso: ' + curso"></p>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            @click="resetForm"
+                            class="flex items-center transition"
+                            style="color: #e3b063;"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sección de actividades -->
+                <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-8 slide-in-right" style="border: 1px solid #1d6489;">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold" style="color: #d5d2c9;">Actividades del Curso</h2>
+                        <a href="actividad.html">
+                            <button class="btn-teacher px-6 py-3 rounded-lg font-semibold transition transform shadow-lg flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Agregar Actividad
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- Lista de actividades -->
+                    <div x-show="activities.length > 0" class="space-y-4">
+                        <template x-for="activity in activities" :key="activity.workshopId">
+                            <div class="activity-card">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <h3 class="text-xl font-semibold mb-2" style="color: #d5d2c9;" x-text="'Actividad ID: ' + activity.workshopId"></h3>
+                                        <p class="text-sm mb-4" style="color: #d5d2c9; opacity: 0.8;">Creada el: <span x-text="new Date(activity.createdAt).toLocaleDateString('es-ES')"></span></p>
+                                        
+                                        <div class="space-y-2">
+                                            <h4 class="font-semibold" style="color: #326342;">Criterios de evaluación:</h4>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                                <div class="p-2 rounded" style="background-color: #20232a;">
+                                                    <span style="color: #326342;">Claridad:</span>
+                                                    <p class="text-xs mt-1" style="color: #d5d2c9;" x-text="activity.criteria.claridad"></p>
+                                                </div>
+                                                <div class="p-2 rounded" style="background-color: #20232a;">
+                                                    <span style="color: #326342;">Relevancia:</span>
+                                                    <p class="text-xs mt-1" style="color: #d5d2c9;" x-text="activity.criteria.relevancia"></p>
+                                                </div>
+                                                <div class="p-2 rounded" style="background-color: #20232a;">
+                                                    <span style="color: #326342;">Tono:</span>
+                                                    <p class="text-xs mt-1" style="color: #d5d2c9;" x-text="activity.criteria.tono"></p>
+                                                </div>
+                                                <div class="p-2 rounded" style="background-color: #20232a;">
+                                                    <span style="color: #326342;">Justificación:</span>
+                                                    <p class="text-xs mt-1" style="color: #d5d2c9;" x-text="activity.criteria.justificacion"></p>
+                                                </div>
+                                                <div class="p-2 rounded md:col-span-2" style="background-color: #20232a;">
+                                                    <span style="color: #326342;">Observaciones generales:</span>
+                                                    <p class="text-xs mt-1" style="color: #d5d2c9;" x-text="activity.criteria.observaciones"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Mensaje cuando no hay actividades -->
+                    <div x-show="activities.length === 0" class="text-center py-12">
+                        <svg class="w-16 h-16 mx-auto mb-4" style="color: #326342;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="text-lg mb-2" style="color: #d5d2c9;">No hay actividades creadas aún</p>
+                        <p class="text-sm" style="color: #d5d2c9; opacity: 0.7;">Haz clic en "Agregar Actividad" para crear tu primera rúbrica</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

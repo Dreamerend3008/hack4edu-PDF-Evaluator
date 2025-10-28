@@ -13,6 +13,10 @@
     <title>Portal Estudiantil</title>
     
     <style>
+        body {
+            background-color: #20232a;
+        }
+        
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -34,10 +38,59 @@
             from { opacity: 0; transform: translateX(20px); }
             to { opacity: 1; transform: translateX(0); }
         }
+        
+        .container-box {
+            background-color: #1d2e33;
+            border-color: #1b3847;
+        }
+        
+        .input-field {
+            background-color: #1b3847;
+            border-color: #1d6489;
+        }
+        
+        .input-field:focus {
+            border-color: #638ce3;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 140, 227, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #7a9ee8 0%, #2a7ba3 100%);
+        }
+        
+        .btn-upload {
+            background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%);
+        }
+        .btn-upload:hover {
+            background: linear-gradient(135deg, #7a9ee8 0%, #2a7ba3 100%);
+        }
+        
+        .btn-grades {
+            background: linear-gradient(135deg, #326342 0%, #005b52 100%);
+        }
+        .btn-grades:hover {
+            background: linear-gradient(135deg, #3d7a52 0%, #007a6e 100%);
+        }
+        
+        .accent-circle {
+            background-color: #638ce3;
+        }
+        
+        .info-box {
+            background-color: #1b3847;
+        }
+        
+        .divider {
+            border-color: #33221d;
+        }
     </style>
 </head>
 
-<body class="bg-gray-800 text-white font-mono min-h-screen">
+<body class="text-white font-mono min-h-screen">
     <div x-data="{
         studentCode: '',
         isValidCode: false,
@@ -45,11 +98,27 @@
         cursoActual: '',
         showError: false,
         loading: false,
-        
+
+        init() {
+            // Restaurar sesión si existe
+            try {
+                const saved = localStorage.getItem('studentSession');
+                if (saved) {
+                    const s = JSON.parse(saved);
+                    this.studentCode = s.studentCode || '';
+                    this.studentName = s.studentName || '';
+                    this.cursoActual = s.cursoActual || '';
+                    this.isValidCode = !!(this.studentCode && this.studentName);
+                }
+            } catch (e) {
+                console.warn('No se pudo restaurar la sesión del estudiante:', e);
+            }
+        },
+
         validateCode() {
             this.loading = true;
             this.showError = false;
-            
+
             // Simular validación con una pequeña demora
             setTimeout(() => {
                 const validCodes = {
@@ -57,38 +126,52 @@
                     '222222': { nombre: 'Juan Bravo', curso: '11-2' },
                     '333333': { nombre: 'David Davila', curso: '11-3' }
                 };
-                
+
                 if (validCodes[this.studentCode]) {
                     this.studentName = validCodes[this.studentCode].nombre;
                     this.cursoActual = validCodes[this.studentCode].curso;
                     this.isValidCode = true;
+
+                    // Guardar sesión persistente
+                    try {
+                        localStorage.setItem('studentSession', JSON.stringify({
+                            studentCode: this.studentCode,
+                            studentName: this.studentName,
+                            cursoActual: this.cursoActual,
+                            ts: Date.now()
+                        }));
+                    } catch (e) {
+                        console.warn('No se pudo guardar la sesión del estudiante:', e);
+                    }
                 } else {
                     this.showError = true;
                 }
-                
+
                 this.loading = false;
             }, 800);
         },
-        
+
         resetForm() {
             this.studentCode = '';
             this.isValidCode = false;
             this.studentName = '';
             this.cursoActual = '';
             this.showError = false;
+            // Borrar sesión persistente
+            try { localStorage.removeItem('studentSession'); } catch {}
         }
     }" class="min-h-screen flex items-center justify-center p-4">
         
         <!-- Pantalla de ingreso de código -->
-        <div x-show="!isValidCode" class="max-w-md w-full bg-blue-800/30 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden fade-in p-8 border border-blue-600/30">
+        <div x-show="!isValidCode" class="max-w-md w-full container-box backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden fade-in p-8 border">
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold mb-2">PDFSSOR</h1>
-                <p class="text-blue-200">Ingresa tu código para acceder</p>
+                <h1 class="text-3xl font-bold mb-2" style="color: #d5d2c9;">PDFSSOR</h1>
+                <p style="color: #d5d2c9; opacity: 0.8;">Ingresa tu código para acceder</p>
             </div>
             
             <div class="space-y-6">
                 <div>
-                    <label for="studentCode" class="block text-blue-200 font-semibold text-sm mb-2">
+                    <label for="studentCode" class="block font-semibold text-sm mb-2" style="color: #d5d2c9; opacity: 0.9;">
                         Código de Estudiante
                     </label>
                     <div class="relative">
@@ -96,7 +179,7 @@
                             x-model="studentCode"
                             type="text"
                             id="studentCode"
-                            class="block w-full rounded-lg py-3 px-4 bg-blue-900/50 border border-blue-600 focus:border-blue-400 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                            class="input-field block w-full rounded-lg py-3 px-4 border transition text-white"
                             placeholder="Ej: 000000"
                             :class="showError ? 'border-red-500' : ''"
                             @keyup.enter="validateCode"
@@ -108,14 +191,14 @@
                         </div>
                     </div>
                     <p x-show="showError" class="mt-2 text-sm text-red-400">Código incorrecto. Inténtalo de nuevo.</p>
-                    <p class="mt-2 text-sm text-blue-300">Códigos válidos: 111111,222222,333333</p>
+                    <p class="mt-2 text-sm" style="color: #d5d2c9; opacity: 0.7;">Códigos válidos: 111111,222222,333333</p>
                 </div>
                 
                 <button
                     @click="validateCode"
                     :disabled="loading || !studentCode"
-                    :class="(loading || !studentCode) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-500 transform hover:scale-105'"
-                    class="w-full py-3 bg-blue-600 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                    :class="(loading || !studentCode) ? 'opacity-50 cursor-not-allowed' : 'transform hover:scale-105'"
+                    class="btn-primary w-full py-3 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center justify-center"
                 >
                     <span x-show="!loading">Acceder al Portal</span>
                     <span x-show="loading" class="flex items-center">
@@ -126,6 +209,25 @@
                         Verificando...
                     </span>
                 </button>
+
+                <div x-data="{ loading: false }">
+                    <button
+                        @click="loading = true; setTimeout(() => window.history.back(), 1000)"
+                        :disabled="loading"
+                        :class="loading ? 'opacity-50 cursor-not-allowed' : 'transform hover:scale-105'"
+                        class="btn-primary w-full py-3 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                    >
+                        <span x-show="!loading">Regresar</span>
+                        <span x-show="loading" class="flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Regresando...
+                        </span>
+                    </button>
+                </div>
+
             </div>
         </div>
         
@@ -133,40 +235,43 @@
         <div x-show="isValidCode" x-transition class="w-full max-w-6xl">
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Columna izquierda - Saludo -->
-                <div class="lg:w-1/2 bg-blue-800/30 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border border-blue-600/30 slide-in-left">
+                <div class="lg:w-1/2 container-box backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border slide-in-left">
                     <div class="flex items-center mb-6">
-                        <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                        <div class="w-16 h-16 accent-circle rounded-full flex items-center justify-center mr-4">
                             <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold">¡Bienvenido!</h2>
-                            <p class="text-blue-200" x-text="studentName"></p>
+                            <h2 class="text-2xl font-bold" style="color: #d5d2c9;">¡Bienvenido!</h2>
+                            <p style="color: #d5d2c9; opacity: 0.8;" x-text="studentName"></p>
                         </div>
                     </div>
                     
-                    <div class="bg-blue-900/50 rounded-xl p-6 mb-6">
-                        <h3 class="text-xl font-semibold mb-4">Información del Estudiante</h3>
+                    <div class="info-box rounded-xl p-6 mb-6">
+                        <h3 class="text-xl font-semibold mb-4" style="color: #d5d2c9;">Información del Estudiante</h3>
                         <div class="space-y-3">
-                            <div class="flex justify-between border-b border-blue-700/50 pb-2">
-                                <span class="text-blue-300">Código:</span>
-                                <span x-text="studentCode" class="font-mono"></span>
+                            <div class="flex justify-between border-b divider pb-2">
+                                <span style="color: #d5d2c9; opacity: 0.7;">Código:</span>
+                                <span class="font-mono" style="color: #d5d2c9;" x-text="studentCode"></span>
                             </div>
-                            <div class="flex justify-between border-b border-blue-700/50 pb-2">
-                                <span class="text-blue-300">Salón:</span>
-                                <span x-text="cursoActual" class="font-mono"></span>
+                            <div class="flex justify-between border-b divider pb-2">
+                                <span style="color: #d5d2c9; opacity: 0.7;">Salón:</span>
+                                <span class="font-mono" style="color: #d5d2c9;" x-text="cursoActual"></span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-blue-300">Estado:</span>
-                                <span class="text-green-400">Activo</span>
+                                <span style="color: #d5d2c9; opacity: 0.7;">Estado:</span>
+                                <span style="color: #326342;">Activo</span>
                             </div>
                         </div>
                     </div>
                     
                     <button 
                         @click="resetForm"
-                        class="flex items-center text-blue-300 hover:text-white transition"
+                        class="flex items-center transition"
+                        style="color: #d5d2c9; opacity: 0.7;"
+                        onmouseover="this.style.opacity='1'"
+                        onmouseout="this.style.opacity='0.7'"
                     >
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -176,38 +281,38 @@
                 </div>
                 
                 <!-- Columna derecha - Opciones -->
-                <div class="lg:w-1/2 bg-blue-800/30 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border border-blue-600/30 slide-in-right">
-                    <h2 class="text-2xl font-bold mb-8 text-center">¿Qué deseas hacer?</h2>
+                <div class="lg:w-1/2 container-box backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border slide-in-right">
+                    <h2 class="text-2xl font-bold mb-8 text-center" style="color: #d5d2c9;">¿Qué deseas hacer?</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Subir actividad -->
                         <a href="../Student/pdf.html" class="block">
-                            <div class="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                                <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                            <div class="btn-upload rounded-xl p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                                <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background-color: rgba(255, 255, 255, 0.2);">
                                     <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                     </svg>
                                 </div>
                                 <h3 class="text-xl font-semibold mb-2">Subir Actividad</h3>
-                                <p class="text-blue-100 text-sm">Envía tus tareas, proyectos y actividades académicas</p>
+                                <p class="text-sm" style="opacity: 0.9;">Envía tus tareas, proyectos y actividades académicas</p>
                             </div>
                         </a>
                         
                         <!-- Revisar notas -->
-                        <button class="bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+                        <button class="btn-grades rounded-xl p-6 h-full flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                            <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background-color: rgba(255, 255, 255, 0.2);">
                                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
                             </div>
                             <h3 class="text-xl font-semibold mb-2">Revisar Notas Parciales</h3>
-                            <p class="text-green-100 text-sm">Consulta tus calificaciones y progreso académico</p>
+                            <p class="text-sm" style="opacity: 0.9;">Consulta tus calificaciones y progreso académico</p>
                         </button>
                     </div>
                     
-                    <div class="mt-8 bg-blue-900/50 rounded-xl p-4">
-                        <h3 class="font-semibold mb-2 text-blue-200">Recordatorio importante</h3>
-                        <p class="text-sm text-blue-300">
+                    <div class="mt-8 info-box rounded-xl p-4">
+                        <h3 class="font-semibold mb-2" style="color: #d5d2c9; opacity: 0.9;">Recordatorio importante</h3>
+                        <p class="text-sm" style="color: #d5d2c9; opacity: 0.7;">
                             Recuerda que las actividades deben subirse antes de la fecha límite establecida por el profesor.
                             Las notas parciales se actualizan semanalmente.
                         </p>

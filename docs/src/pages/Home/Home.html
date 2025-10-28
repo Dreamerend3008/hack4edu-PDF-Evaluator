@@ -3,22 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio</title>
+  <title>PDFSSOR | Evaluador Inteligente de PDF</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    @font-face {
+      font-family: 'CaskaydiaMono';
+      src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    body {
+      font-family: 'CaskaydiaMono', monospace;
+      background-color: #20232a;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-students {
+      background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%);
+    }
+    .btn-students:hover {
+      background: linear-gradient(135deg, #7a9ee8 0%, #2a7ba3 100%);
+    }
+
+    .btn-teachers {
+      background: linear-gradient(135deg, #326342 0%, #005b52 100%);
+    }
+    .btn-teachers:hover {
+      background: linear-gradient(135deg, #3d7a52 0%, #007a6e 100%);
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white font-mono flex flex-col items-center justify-center min-h-screen gap-4">
 
-  <h1 class="text-3xl mb-4">Ingreso al sistema</h1>
+<body class="text-white font-mono flex flex-col items-center justify-center min-h-screen p-6 space-y-8">
 
-  <a href="../Student/Student.html">
-    <button class="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-lg font-semibold transition">
-      Ingreso Alumnos
-    </button>
-  </a>
+  <!-- Encabezado -->
+  <header class="text-center fade-in">
+    <h1 class="text-5xl font-bold mb-2" style="color:#fbbb5a;">PDFSSOR</h1>
+    <p class="text-lg text-gray-300">Evaluaciones inteligentes, rápidas y objetivas</p>
+  </header>
 
-  <button class="px-6 py-3 bg-green-500 hover:bg-green-600 rounded-lg text-lg font-semibold transition">
-    Ingreso Profesores
-  </button>
+  <!-- Contenedor principal -->
+  <main style="background-color: #1d2e33;" 
+        class="backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border max-w-md w-full fade-in"
+        style="border-color: #1b3847;">
+        
+    <h2 class="text-2xl mb-6 text-center font-bold" style="color: #d5d2c9;">Ingreso al Sistema</h2>
+
+    <p class="text-sm text-gray-400 text-center mb-6">
+      Una plataforma basada en inteligencia artificial que permite a docentes y estudiantes
+      gestionar, evaluar y mejorar actividades académicas con retroalimentación automatizada.
+    </p>
+
+    <div class="space-y-4">
+      <a href="../Student/Student.html" class="block">
+        <button class="btn-students w-full px-6 py-3 rounded-lg text-lg font-semibold transition transform hover:scale-105 shadow-lg">
+          Ingreso Alumnos
+        </button>
+      </a>
+
+      <a href="../Teacher/TeacherHome.html" class="block">
+        <button class="btn-teachers w-full px-6 py-3 rounded-lg text-lg font-semibold transition transform hover:scale-105 shadow-lg">
+          Ingreso Profesores
+        </button>
+      </a>
+    </div>
+  </main>
+
+  <!-- Frase inspiradora -->
+  <section class="text-center text-gray-400 fade-in">
+    <p class="italic">"Optimiza tu tiempo, mejora tus resultados."</p>
+  </section>
+
+  <!-- Pie de página -->
+  <footer class="text-gray-500 text-sm text-center mt-8 fade-in">
+    <p>Proyecto académico - Hack4Edu 2025</p>
+  </footer>
 
 </body>
 </html>

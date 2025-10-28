@@ -1,11 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado</title>
-</head>
-<body>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados de Evaluación</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script src="//unpkg.com/alpinejs" defer></script>
+  
+  <style>
+    @font-face {
+      font-family: 'CaskaydiaMono';
+      src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
     
+    body {
+      font-family: 'CaskaydiaMono', monospace;
+      background-color: #20232a;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      background-color: #d5d2c9;
+      color: #638ce3;
+    }
+    
+    .container-box {
+      background-color: #1d2e33;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .btn-back {
+      background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%);
+      color: #d5d2c9;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-back:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(99, 140, 227, 0.4);
+    }
+  </style>
+</head>
+<body class="font-mono min-h-screen flex flex-col items-center justify-center p-4" style="background-color: #20232a; color: #d5d2c9;">
+  <div x-data="evaluationResults()" class="max-w-4xl w-full">
+    <!-- Encabezado -->
+    <div class="text-center mb-8 fade-in">
+      <h1 class="text-3xl font-bold mb-2" style="color: #d5d2c9;">Resultados de la Evaluación</h1>
+      <p style="color: #d5d2c9; opacity: 0.8;">Análisis completo de tu trabajo</p>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden fade-in" style="border: 1px solid #1d6489;">
+      <!-- Sección de calificación principal -->
+      <div class="p-8" style="background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%); color: #d5d2c9;">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex-1 text-center md:text-left">
+            <h2 class="text-2xl font-semibold mb-2">Tu Calificación</h2>
+            <p class="text-lg mt-2" style="opacity: 0.9;" x-text="evaluation.summary || 'Resumen de evaluación'"></p>
+          </div>
+          <div class="score-circle">
+            <span x-text="evaluation.score || 'N/A'"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comentarios generales -->
+      <div class="p-6 border-b" style="background-color: #1b3847; border-color: #1d6489;">
+        <h3 class="text-lg font-semibold mb-3 flex items-center" style="color: #d5d2c9;">
+          <svg class="w-5 h-5 mr-2" style="color: #638ce3;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+          </svg>
+          Comentarios Generales
+        </h3>
+        <div class="rounded-lg p-4" style="background-color: #20232a; border: 1px solid #1d6489;">
+          <p style="color: #d5d2c9;" x-text="evaluation.comments || 'No hay comentarios disponibles'"></p>
+        </div>
+      </div>
+
+      <!-- Criterios de evaluación -->
+      <div class="p-6">
+        <h3 class="text-lg font-semibold mb-4 flex items-center" style="color: #d5d2c9;">
+          <svg class="w-5 h-5 mr-2" style="color: #638ce3;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+          </svg>
+          Criterios de Evaluación
+        </h3>
+        <div class="space-y-4">
+          <template x-for="criterion in evaluation.criteria || []" :key="criterion.name">
+            <div class="rounded-lg p-4" style="background-color: #1b3847; border: 1px solid #1d6489;">
+              <div class="flex items-center justify-between mb-2">
+                <h4 class="font-semibold" style="color: #d5d2c9;" x-text="criterion.name"></h4>
+                <span class="px-3 py-1 rounded-full text-sm font-bold" 
+                      :style="'background-color: ' + getRatingColor(criterion.rating) + '; color: #20232a;'"
+                      x-text="criterion.rating + '/5'"></span>
+              </div>
+              <p class="text-sm" style="color: #d5d2c9; opacity: 0.9;" x-text="criterion.feedback"></p>
+            </div>
+          </template>
+          <template x-if="!evaluation.criteria || evaluation.criteria.length === 0">
+            <p class="italic text-center py-4" style="color: #d5d2c9; opacity: 0.7;">No hay criterios de evaluación disponibles</p>
+          </template>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="p-6 border-t flex justify-center" style="background-color: #1b3847; border-color: #1d6489;">
+        <a href="Student.html" class="flex-1 max-w-xs">
+          <button class="btn-back w-full">
+            Volver a Student
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mensaje de error si no hay datos -->
+    <div x-show="error" class="mt-6 rounded-lg p-4 text-center fade-in" style="background-color: rgba(91, 0, 9, 0.5); border: 1px solid #5b0009;">
+      <svg class="w-12 h-12 mx-auto mb-2" style="color: #e3b063;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <p class="font-semibold" style="color: #e3b063;" x-text="error"></p>
+      <a href="pdf.html" class="inline-block mt-4 px-4 py-2 rounded-lg transition" style="background-color: #5b0009; color: #d5d2c9;">
+        Volver a intentar
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('evaluationResults', () => ({
+        evaluation: {},
+        error: '',
+
+        init() {
+          // Obtener datos de URL params o localStorage
+          const urlParams = new URLSearchParams(window.location.search);
+          const dataParam = urlParams.get('data');
+          
+          if (dataParam) {
+            try {
+              this.evaluation = JSON.parse(decodeURIComponent(dataParam));
+            } catch (e) {
+              this.error = 'Error al cargar los datos de evaluación desde URL';
+              console.error('Error parsing URL data:', e);
+            }
+          } else {
+            // Intentar obtener de localStorage como backup
+            const storedData = localStorage.getItem('evaluationResult');
+            if (storedData) {
+              try {
+                this.evaluation = JSON.parse(storedData);
+                // Limpiar localStorage después de leer
+                localStorage.removeItem('evaluationResult');
+              } catch (e) {
+                this.error = 'Error al cargar los datos de evaluación desde almacenamiento local';
+                console.error('Error parsing stored data:', e);
+              }
+            } else {
+              this.error = 'No se encontraron datos de evaluación. Por favor, realiza una evaluación primero.';
+            }
+          }
+        },
+
+        getRatingColor(rating) {
+          const score = parseFloat(rating);
+          if (score >= 4.5) return '#326342'; // Verde para excelente
+          if (score >= 3.5) return '#638ce3'; // Azul para bueno
+          if (score >= 2.5) return '#e3b063'; // Amarillo para regular
+          return '#5b0009'; // Rojo oscuro para bajo
+        }
+      }));
+    });
+  </script>
 </body>
 </html>
