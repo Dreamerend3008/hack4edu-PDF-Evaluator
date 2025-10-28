@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluador IA de PDF</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script src="//unpkg.com/alpinejs" defer></script>
+  
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .progress-bar {
+      height: 6px;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="max-w-2xl w-full">
+    <!-- Encabezado -->
+    <div class="text-center mb-8 fade-in">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Recuerda que tiene que estar en formato pdf</h1>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div x-data="pdfUploader()" class="bg-white rounded-2xl shadow-lg overflow-hidden fade-in">
+      <!-- Área de carga -->
+      <div class="p-8 border-b border-gray-200">
+        <div class="flex flex-col items-center justify-center mb-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <h2 class="text-xl font-semibold text-gray-800">Subir archivo PDF</h2>
+        </div>
+
+        <!-- Selector de archivos -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Selecciona un archivo PDF</label>
+          <div class="flex items-center justify-center w-full">
+            <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition border-gray-300">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6" x-show="!file">
+                <svg class="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Haz clic para subir</span> o arrastra y suelta</p>
+                <p class="text-xs text-gray-500">PDF (Máx. 10MB)</p>
+              </div>
+              <div x-show="file" class="text-center">
+                <svg class="w-8 h-8 mx-auto mb-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p class="text-sm font-medium text-gray-700" x-text="file.name"></p>
+                <p class="text-xs text-gray-500" x-text="formatFileSize(file.size)"></p>
+              </div>
+              <input type="file" @change="handleFile" accept="application/pdf" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div x-show="uploading" class="mb-6">
+          <div class="flex justify-between text-sm text-gray-600 mb-1">
+            <span>Subiendo archivo...</span>
+            <span x-text="uploadProgress + '%'"></span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="progress-bar h-2 rounded-full" :style="`width: ${uploadProgress}%`"></div>
+          </div>
+        </div>
+
+        <!-- Botón de subida -->
+        <button
+          @click="upload"
+          :disabled="!file || uploading"
+          :class="!file || uploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700 transform hover:scale-105'"
+          class="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 flex items-center justify-center"
+        >
+          <span x-show="!uploading">Evaluar PDF</span>
+          <span x-show="uploading" class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Procesando...
+          </span>
+        </button>
+
+        <!-- Mensaje de error -->
+        <div x-show="error" class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start">
+          <svg class="w-5 h-5 text-red-500 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+          </svg>
+          <span class="text-red-700 text-sm" x-text="error"></span>
+        </div>
+      </div>
+
+      <!-- Resultados -->
+      <div x-show="response" class="p-6 bg-gray-50">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Resultado de la evaluación
+        </h3>
+        <div class="bg-white border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+          <pre class="text-sm text-gray-800 whitespace-pre-wrap" x-text="response"></pre>
+        </div>
+        
+        <!-- Botón para nueva evaluación -->
+        <div class="mt-6 text-center">
+          <button
+            @click="reset"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition"
+          >
+            Realizar otra evaluación
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('pdfUploader', () => ({
+        file: null,
+        response: '',
+        error: '',
+        uploading: false,
+        uploadProgress: 0,
+
+        handleFile(event) {
+          this.file = event.target.files[0];
+          this.error = '';
+          this.response = '';
+        },
+
+        formatFileSize(bytes) {
+          if (bytes === 0) return '0 Bytes';
+          const k = 1024;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        },
+
+        async upload() {
+          if (!this.file) {
+            this.error = 'Selecciona un archivo PDF primero.';
+            return;
+          }
+
+          // Validar tipo de archivo
+          if (this.file.type !== 'application/pdf') {
+            this.error = 'Por favor, selecciona un archivo PDF válido.';
+            return;
+          }
+
+          this.uploading = true;
+          this.uploadProgress = 0;
+          this.error = '';
+          this.response = '';
+
+          // Simular progreso de carga
+          const progressInterval = setInterval(() => {
+            if (this.uploadProgress < 90) {
+              this.uploadProgress += 10;
+            }
+          }, 200);
+
+          const formData = new FormData();
+          formData.append('file', this.file);
+
+          try {
+            const res = await fetch('aqui va el fetch pero sinceramente me dio miedito dejarlo :c', {
+              method: 'POST',
+              body: formData
+            });
+
+            clearInterval(progressInterval);
+            this.uploadProgress = 100;
+
+            if (!res.ok) {
+              throw new Error(`Error ${res.status}: ${res.statusText}`);
+            }
+
+            const data = await res.json();
+            this.response = JSON.stringify(data, null, 2);
+          } catch (error) {
+            this.error = `Error: ${error.message}`;
+          } finally {
+            this.uploading = false;
+            this.uploadProgress = 0;
+          }
+        },
+
+        reset() {
+          this.file = null;
+          this.response = '';
+          this.error = '';
+          this.uploading = false;
+          this.uploadProgress = 0;
+          // Limpiar el input de archivo
+          const fileInput = document.querySelector('input[type="file"]');
+          if (fileInput) fileInput.value = '';
+        }
+      }));
+    });
+  </script>
+</body>
+</html>
