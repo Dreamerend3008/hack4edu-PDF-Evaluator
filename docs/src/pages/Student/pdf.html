@@ -67,6 +67,18 @@
               <input type="file" @change="handleFile" accept="application/pdf" class="hidden" />
             </label>
           </div>
+
+          <!-- Botón de prueba de fetch -->
+          <div class="mt-6 text-center">
+            <button
+              @click="testFetch"
+              class="px-6 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-lg font-semibold text-white transition"
+            >
+              testFetch
+            </button>
+          </div>
+
+
         </div>
 
         <!-- Barra de progreso -->
@@ -180,8 +192,11 @@
 
           const formData = new FormData();
           formData.append('file', this.file);
+          formData.append('blob_name', this.file.name);          // nombre del blob en Azure
+          formData.append('student_id', '312');           // ID del estudiante
+          formData.append('student_name', 'Juanito Alimania');    // nombre del estudiante
+          formData.append('workshop_id', '456');   // ID del taller o actividad
 
-<<<<<<< HEAD
 
           //Fetch para upload pdf
           const URL = 'https://fahack4edu-b7cfhhbtczb0gndq.westus3-01.azurewebsites.net/api/uploadPDF'
@@ -193,23 +208,46 @@
           
           
           //Subida de pdf
-=======
->>>>>>> parent of 3d58b2d (Fetch integration)
           try {
-            const res = await fetch('aqui va el fetch pero sinceramente me dio miedito dejarlo :c', {
+            const res = await fetch(URL, {
               method: 'POST',
-              body: formData
+              body: formData,
+              signal: controller.signal
             });
 
-            clearInterval(progressInterval);
+            const info = {
+              url: URL,
+              status: res.status,
+              statusText: res.statusText,
+              contentType: res.headers.get('content-type') || ''
+            };
+            clearTimeout(timeoutId);
+
             this.uploadProgress = 100;
 
             if (!res.ok) {
-              throw new Error(`Error ${res.status}: ${res.statusText}`);
+              // intenta obtener cuerpo para ver mensaje de error del servidor
+              let textBody = '';
+              try {
+                textBody = await res.text();
+              } catch (e) {
+                textBody = '<no se pudo leer el body de error>';
+              }
+              this.response = JSON.stringify({ info, body: textBody }, null, 2);
+              this.error = `Respuesta no OK: ${res.status} ${res.statusText}`;
+              return;
             }
 
-            const data = await res.json();
-            this.response = JSON.stringify(data, null, 2);
+            // Si es JSON, parsea; si no, devuelve texto
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+              const data = await res.json();
+              this.response = JSON.stringify({ info, data }, null, 2);
+            } else {
+              const text = await res.text();
+              this.response = JSON.stringify({ info, text }, null, 2);
+            }
+
           } catch (error) {
             this.error = `Error: ${error.message}`;
           } finally {
@@ -218,7 +256,6 @@
           }
         },
 
-<<<<<<< HEAD
         async testFetch() {
           this.error = '';
           this.response = 'Realizando prueba de conexión...';
@@ -283,8 +320,6 @@
         },
 
 
-=======
->>>>>>> parent of 3d58b2d (Fetch integration)
         reset() {
           this.file = null;
           this.response = '';
