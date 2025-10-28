@@ -7,10 +7,6 @@ import logging
 import cgi
 import io
 
-# cosas a revisar
-# fallo la subida a la tabla del blob storage por culpa de un valor null revisar eso
-
-
 
 # use the src folder for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
@@ -20,7 +16,7 @@ from utils.blob_client import get_blob_client
 
 app = func.FunctionApp()
 
-@app.route(route="uploadPDF", methods=["POST"])
+@app.route(route="uploadPDF", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
 def uploadPDF(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('PDF Upload triggered')
     try:
@@ -57,10 +53,21 @@ def uploadPDF(req: func.HttpRequest) -> func.HttpResponse:
         blob_client = get_blob_client(container, blob_name)
         blob_client.upload_blob(file_bytes, overwrite=True)
 
-        result = evaluate_pdf(container, blob_name, max_chars=50000, model="gpt-4o-mini")
+        result = evaluate_pdf(container, blob_name, workshop_id,max_chars=50000, model="gpt-4o-mini")
 
 
-        response_body = json.loads(result)
+        # some error in the json managment
+        if isinstance(result, (str, bytes, bytearray)):
+            try:
+                response_body = json.loads(result)
+            except Exception:
+                logging.warning("evaluate_pdf returned non-JSON string")
+                response_body = {"raw": result}
+        elif isinstance(result, dict):
+            response_body = result
+        else:
+            response_body = {"raw": str(result)}
+
         table_name = "StudentGrades"
         score = response_body.get("score", 0.0) if isinstance(response_body, dict) else 0.0
         comments = response_body.get("comments", "") if isinstance(response_body, dict) else ""
@@ -79,11 +86,10 @@ def uploadPDF(req: func.HttpRequest) -> func.HttpResponse:
         logging.exception("Unhandled exception in uploadPDF")
         return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
 
-@app.route(route="uploadRubica", methods=["POST"])
+@app.route(route="uploadRubica", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
 def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Rubica Upload triggered')
     try:
-        # Parse FormData from Alpine.js fetch with multipart/form-data
         content_type = req.headers.get('content-type', '')
         
         if 'multipart/form-data' in content_type:
@@ -101,17 +107,11 @@ def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
                 keep_blank_values=True
             )
             
-            # Extract form fields
-            container = form.getvalue('container') or 'pdf'
-            blob_name = form.getvalue('blob_name')
-            
-            # Get file from form
-            file_field = form['file'] if 'file' in form else None
-            if not file_field or not hasattr(file_field, 'file'):
-                return func.HttpResponse(json.dumps({"error": "file is required"}), status_code=400, mimetype="application/json")
-            
-            file_bytes = file_field.file.read()
-            filename = file_field.filename or blob_name
+            container = 'rubicas'
+            blob_name = form.getvalue('workshop_id')
+            blob_name = blob_name + '.txt'
+
+            text = str(form.getvalue('text'))
         else:
             return func.HttpResponse(json.dumps({"error": "multipart/form-data content-type required"}), status_code=400, mimetype="application/json")
 
@@ -120,10 +120,10 @@ def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
 
         # Upload file to blob storage
         blob_client = get_blob_client(container, blob_name)
-        blob_client.upload_blob(file_bytes, overwrite=True)
-        
+        blob_client.upload_blob(text, overwrite=True)
+
         return func.HttpResponse(
-            json.dumps({"message": f"File {filename} uploaded successfully to container {container}."}),
+            json.dumps({"message": f"File {blob_name} uploaded successfully to container {container}."}),
             status_code=200,
             mimetype="application/json"
         )
@@ -133,7 +133,7 @@ def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
         logging.exception("Unhandled exception in uploadRubrica")
         return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
 # health check endpoint
-@app.route(route="health", methods=["GET"])
+@app.route(route="health", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
     return func.HttpResponse(
         json.dumps({"status": "healthy", "version": "1.0"}),
