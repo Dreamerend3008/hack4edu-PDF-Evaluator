@@ -3,7 +3,7 @@ from azure.data.tables import TableServiceClient
 
 def save_to_table_storage(student_id: str, student_name: str, score: float, workshop_id: str, comments: str, table_name: str="StudentGrades"):
     try:
-        conn_str = os.getenv("AZURE_TABLES_CONNECTION_STRING")
+        conn_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
         service = TableServiceClient.from_connection_string(conn_str=conn_str)
         table_client = service.get_table_client(table_name=table_name)
         entity = {
