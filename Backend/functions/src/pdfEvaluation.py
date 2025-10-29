@@ -27,7 +27,7 @@ def main(req: func.HttpRequest) -> func.HttpRequest:
 def evaluate_pdf(container: str, blob_name:str, workshop_id: str, max_chars:int, model:str):
     try:
         rubrica_prompt = """Eres un evaluador. Recibirás un TEXTO y debes calificarlo según esta rúbrica:"""
-        formato_json = """"Devuelve exclusivamente un JSON con el siguiente formato. Siempre incluye exactamente 5 criterios:
+        formato_json = """"Devuelve exclusivamente un JSON con el siguiente formato. Siempre incluye exactamente 5 criterios y califica de 0 a 5, manten los comentarios cortos:
 {
   "score": float,
   "comments": string,
