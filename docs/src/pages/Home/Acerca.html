@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acerca de | PDFSSOR</title>
+  <link rel="stylesheet" href="../../styles/global.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['CaskaydiaMono', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gradient-navbar {
+      background: linear-gradient(135deg, rgba(29, 46, 51, 0.95), rgba(27, 40, 49, 0.95));
+      border-bottom: 2px solid transparent;
+      border-image: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary)) 1;
+    }
+
+    .logo-gradient {
+      background: linear-gradient(135deg, var(--color-accent-primary) 0%, var(--color-coffee-medium) 50%, var(--color-accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+  </style>
+</head>
+<body class="font-mono flex flex-col min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="gradient-navbar flex justify-between items-center px-8 py-4 backdrop-blur-md shadow-lg">
+    <h1 class="text-2xl logo-gradient">PDFSSOR</h1>
+    <div class="space-x-6 text-secondary">
+      <a href="Home.html" class="hover:text-accent transition">Inicio</a>
+      <a href="Acerca.html" class="hover:text-accent transition text-accent font-semibold">Acerca</a>
+      <a href="Equipo.html" class="hover:text-accent transition">Equipo</a>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-grow px-8 py-16">
+    <div class="max-w-6xl mx-auto">
+      
+      <!-- Título -->
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-5xl font-extrabold mb-4" style="color: var(--color-text-primary);">
+          Acerca de <span class="gradient-text">PDFSSOR</span>
+        </h2>
+        <div class="h-1 w-24 mx-auto rounded" style="background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));"></div>
+      </div>
+
+      <!-- Contenido -->
+      <div class="space-y-8">
+        
+        <!-- Qué es PDFSSOR -->
+        <div class="card-coffee p-8 slide-in-left">
+          <h3 class="text-2xl font-bold mb-4" style="color: var(--color-coffee-accent);">¿Qué es PDFSSOR?</h3>
+          <p class="text-lg leading-relaxed" style="color: var(--color-text-secondary);">
+            <span class="text-accent font-bold">PDFSSOR</span> es una plataforma innovadora basada en <span class="font-semibold" style="color: var(--color-accent-primary);">inteligencia artificial</span> diseñada para transformar el proceso de evaluación educativa. Permite a los docentes publicar sus rúbricas de evaluación, cargar evidencias en formato PDF y obtener calificaciones automáticas con retroalimentación objetiva e inmediata.
+          </p>
+        </div>
+
+        <!-- Características principales -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <div class="card hover:scale-105 transition-transform slide-in-up">
+            <div class="flex items-start gap-4">
+              <div class="accent-circle w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                  <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">Evaluación Automática</h4>
+                <p style="color: var(--color-text-secondary);">Calificación instantánea de trabajos en PDF utilizando rúbricas personalizadas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card hover:scale-105 transition-transform slide-in-up">
+            <div class="flex items-start gap-4">
+              <div style="background: linear-gradient(135deg, var(--color-coffee-medium), var(--color-coffee-dark));" class="w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">Retroalimentación Objetiva</h4>
+                <p style="color: var(--color-text-secondary);">Comentarios detallados y constructivos generados por IA para cada evaluación.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card hover:scale-105 transition-transform slide-in-up">
+            <div class="flex items-start gap-4">
+              <div style="background: linear-gradient(135deg, #8a9b7a, #6d8066);" class="w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                  <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">Gestión de Rúbricas</h4>
+                <p style="color: var(--color-text-secondary);">Los docentes pueden crear y personalizar rúbricas de evaluación fácilmente.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card hover:scale-105 transition-transform slide-in-up">
+            <div class="flex items-start gap-4">
+              <div style="background: linear-gradient(135deg, var(--color-warning), var(--color-coffee-dark));" class="w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
+                </svg>
+              </div>
+              <div>
+                <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">Seguimiento de Progreso</h4>
+                <p style="color: var(--color-text-secondary);">Estudiantes pueden ver sus calificaciones y comentarios en tiempo real.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tecnologías -->
+        <div class="card-coffee p-8 slide-in-right">
+          <h3 class="text-2xl font-bold mb-6 text-center" style="color: var(--color-coffee-accent);">Tecnologías Utilizadas</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div>
+              <div class="badge badge-accent text-base px-4 py-2">Azure Functions</div>
+            </div>
+            <div>
+              <div class="badge badge-accent text-base px-4 py-2">AI foundry</div>
+            </div>
+            <div>
+              <div class="badge badge-accent text-base px-4 py-2">Azure Blob Storage</div>
+            </div>
+            <div>
+              <div class="badge badge-accent text-base px-4 py-2">Python</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- PIE -->
+  <footer class="text-center text-muted text-sm py-4 border-t" style="border-color: var(--color-border-primary);">
+    Proyecto Hack4Edu 2025
+  </footer>
+
+</body>
+</html>
