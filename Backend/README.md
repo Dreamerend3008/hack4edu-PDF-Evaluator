@@ -3,7 +3,10 @@
 ### uploadPDF
 
 Descripción general:
-* Recibe una petición HTTPS que tiene un archivo PDF (verifica que sea de tipo 'multipart/form-data', que es el que se recibe a la hora de crear un formulario)
+Recibe una petición HTTPS que tiene un PDF para procesarlo.
+
+Proceso:
+* Recibe la petición y verifica que sea de tipo 'multipart/form-data' (es el que se recibe a la hora de crear un formulario)
 * Extrae información importante del archivo como:
 *   Nombre del estudiante
 *   Header del pdf
@@ -21,3 +24,10 @@ Leer el head
 *    Excepciones generales
 Cargar el JSON
 *    warning: "evaluate_pdf returned non-JSON string"
+
+### uploadRubrica
+Descripción general: Recibe la información de los formularios para actualizar una rúbrica.
+
+Proceso:
+* Header de la rúbrica (valida al igual que la anterior función el tipo)
+* 
