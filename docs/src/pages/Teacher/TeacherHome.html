@@ -7,70 +7,30 @@
     <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>
 
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/pages.css">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['CaskaydiaMono', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
     
     <title>Portal Docente</title>
     
     <style>
-        @font-face {
-            font-family: 'CaskaydiaMono';
-            src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-        }
-        
-        body {
-            font-family: 'CaskaydiaMono', monospace;
-            background-color: #20232a;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .slide-in-left {
-            animation: slideInLeft 0.5s ease-out;
-        }
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .slide-in-right {
-            animation: slideInRight 0.5s ease-out;
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .container-box {
-            background-color: #1d2e33;
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .input-field {
-            background-color: #1b3847;
-            border: 2px solid #1d6489;
-            color: #d5d2c9;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #326342;
-            box-shadow: 0 0 0 3px rgba(50, 99, 66, 0.1);
-        }
-        
         .btn-teacher {
-            background: linear-gradient(135deg, #326342 0%, #005b52 100%);
-            color: #d5d2c9;
+            background: linear-gradient(135deg, var(--color-accent-primary) 0%, var(--color-accent-secondary) 100%);
+            color: var(--color-text-primary);
             padding: 0.75rem 2rem;
             border-radius: 0.5rem;
             font-weight: 600;
@@ -105,33 +65,22 @@
         }
         
         .activity-card {
-            background-color: #1b3847;
-            border: 1px solid #1d6489;
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border-secondary);
             border-radius: 0.75rem;
             padding: 1.5rem;
             transition: all 0.3s;
         }
         
         .activity-card:hover {
-            border-color: #326342;
+            border-color: var(--color-accent-primary);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(50, 99, 66, 0.2);
-        }
-        
-        .accent-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #326342 0%, #005b52 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(50, 99, 66, 0.3);
+            box-shadow: var(--shadow-accent);
         }
     </style>
 </head>
 
-<body class="font-mono min-h-screen" style="background-color: #20232a; color: #d5d2c9;">
+<body class="font-mono min-h-screen text-primary">
     <div x-data="{
         teacherCode: '',
         isValidCode: false,
@@ -268,11 +217,23 @@
                     </span>
                 </button>
 
-                <a href="../Home/Home.html" class="block">
-                    <button class="btn-logout w-full py-3 rounded-lg text-lg font-semibold transition-all duration-300">
-                        Regresar
+                <div x-data="{ loading: false }">
+                    <button
+                        @click="loading = true; setTimeout(() => window.history.back(), 1000)"
+                        :disabled="loading"
+                        :class="loading ? 'opacity-50 cursor-not-allowed' : 'transform hover:scale-105'"
+                        class="btn-primary w-full py-3 rounded-lg text-lg font-semibold transition-all duration-300 flex items-center justify-center"
+                    >
+                        <span x-show="!loading">Regresar</span>
+                        <span x-show="loading" class="flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Regresando...
+                        </span>
                     </button>
-                </a>
+                </div>
             </div>
         </div>
         
@@ -312,14 +273,24 @@
                 <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-8 slide-in-right" style="border: 1px solid #1d6489;">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-2xl font-bold" style="color: #d5d2c9;">Actividades del Curso</h2>
-                        <a href="actividad.html">
-                            <button class="btn-teacher px-6 py-3 rounded-lg font-semibold transition transform shadow-lg flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Agregar Actividad
-                            </button>
-                        </a>
+                        <div class="flex gap-3">
+                            <a href="notas.html">
+                                <button class="btn-teacher px-6 py-3 rounded-lg font-semibold transition transform shadow-lg flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                    </svg>
+                                    Ver Notas
+                                </button>
+                            </a>
+                            <a href="actividad.html">
+                                <button class="btn-teacher px-6 py-3 rounded-lg font-semibold transition transform shadow-lg flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Agregar Actividad
+                                </button>
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Lista de actividades -->

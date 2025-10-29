@@ -7,58 +7,33 @@
     <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>
 
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/pages.css">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['CaskaydiaMono', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
     
     <title>Crear Actividad - Rúbrica</title>
     
     <style>
-        @font-face {
-            font-family: 'CaskaydiaMono';
-            src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
+        .btn-teacher {
+            background: linear-gradient(135deg, var(--color-accent-primary) 0%, var(--color-accent-secondary) 100%);
         }
-        
-        body {
-            font-family: 'CaskaydiaMono', monospace;
-            background-color: #20232a;
+        .btn-teacher:hover {
+            background: linear-gradient(135deg, var(--color-accent-hover) 0%, var(--color-accent-secondary) 100%);
         }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .container-box {
-            background-color: #1d2e33;
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .input-field {
-            background-color: #1b3847;
-            border: 2px solid #1d6489;
-            color: #d5d2c9;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: #326342;
-            box-shadow: 0 0 0 3px rgba(50, 99, 66, 0.1);
-        }
-        
-        .textarea-field {
-            background-color: #1b3847;
-            border: 2px solid #1d6489;
-            color: #d5d2c9;
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             transition: all 0.3s;
@@ -95,24 +70,24 @@
         }
         
         .btn-secondary {
-            background-color: #1b3847;
-            color: #d5d2c9;
+            background-color: var(--color-bg-card);
+            color: var(--color-text-primary);
             padding: 0.75rem 2rem;
             border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.3s;
-            border: 2px solid #1d6489;
+            border: 2px solid var(--color-border-secondary);
             cursor: pointer;
         }
         
         .btn-secondary:hover {
-            border-color: #326342;
+            border-color: var(--color-accent-primary);
             transform: scale(1.05);
         }
     </style>
 </head>
 
-<body class="font-mono min-h-screen p-4" style="background-color: #20232a; color: #d5d2c9;">
+<body class="font-mono min-h-screen p-4 text-primary">
     <div x-data="{
         workshopId: '',
         claridad: '',
@@ -247,13 +222,13 @@
     }" class="max-w-4xl mx-auto py-8">
         
         <!-- Header -->
-        <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-6 mb-8 fade-in" style="border: 1px solid #1d6489;">
+        <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-6 mb-8 fade-in border border-coffee">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold mb-2" style="color: #d5d2c9;">Crear Nueva Actividad</h1>
-                    <p class="text-sm" style="color: #d5d2c9; opacity: 0.8;">Define la rúbrica de evaluación para esta actividad</p>
+                    <h1 class="text-3xl font-bold mb-2 text-primary">Crear Nueva Actividad</h1>
+                    <p class="text-sm text-primary-subtle">Define la rúbrica de evaluación para esta actividad</p>
                 </div>
-                <button @click="cancel" class="transition" style="color: #e3b063;">
+                <button @click="cancel" class="transition text-coffee hover:text-accent">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -262,14 +237,14 @@
         </div>
 
         <!-- Información importante -->
-        <div class="rounded-lg p-4 mb-6 fade-in" style="background-color: #1b3847; border: 1px solid #326342;">
+        <div class="card-coffee mb-6 fade-in">
             <div class="flex items-start">
-                <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-1" style="color: #326342;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-1 text-coffee" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                    <h3 class="font-semibold mb-1" style="color: #326342;">Importante:</h3>
-                    <p class="text-sm" style="color: #d5d2c9;">
+                    <h3 class="font-semibold mb-1 text-coffee">Importante:</h3>
+                    <p class="text-sm text-primary">
                         Al ingresar las características, describe aquellas que le dan al estudiante la <strong>nota máxima (5/5)</strong>.
                         Estas descripciones servirán como el estándar ideal que la IA usará para evaluar los trabajos.
                     </p>
@@ -278,11 +253,11 @@
         </div>
 
         <!-- Formulario -->
-        <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-8 fade-in" style="border: 1px solid #1d6489;">
+        <div class="container-box backdrop-blur-sm shadow-2xl overflow-hidden p-8 fade-in border border-coffee">
             <form @submit.prevent="saveActivity" class="space-y-6">
                 <!-- Workshop ID -->
                 <div>
-                    <label for="workshopId" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                    <label for="workshopId" class="block font-semibold text-sm mb-2 text-primary-faint">
                         ID de la Actividad (Workshop ID) *
                     </label>
                     <input
@@ -293,16 +268,16 @@
                         placeholder="Ej: ACT001, TALLER-2024-01, etc."
                         required
                     />
-                    <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.7;">Identificador único para esta actividad</p>
+                    <p class="mt-1 text-xs text-primary-muted">Identificador único para esta actividad</p>
                 </div>
 
                 <!-- Criterios de evaluación -->
-                <div class="border-t pt-6" style="border-color: #1d6489;">
-                    <h2 class="text-xl font-bold mb-4" style="color: #326342;">Criterios de Evaluación (0-5)</h2>
+                <div class="border-t pt-6 border-coffee">
+                    <h2 class="text-xl font-bold mb-4 text-coffee">Criterios de Evaluación (0-5)</h2>
                     
                     <!-- Claridad -->
                     <div class="mb-6">
-                        <label for="claridad" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                        <label for="claridad" class="block font-semibold text-sm mb-2" class="text-primary">
                             1. Claridad (0–5) *
                         </label>
                         <textarea
@@ -313,12 +288,12 @@
                             placeholder="El texto debe ser claro, directo, bien estructurado y fácil de comprender. Cada idea debe estar expresada de forma precisa, con una organización lógica de párrafos y transiciones fluidas entre conceptos."
                             required
                         ></textarea>
-                        <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.7;">Describe cómo debe ser un texto con claridad máxima</p>
+                        <p class="mt-1 text-xs" class="text-primary-muted">Describe cómo debe ser un texto con claridad máxima</p>
                     </div>
 
                     <!-- Relevancia -->
                     <div class="mb-6">
-                        <label for="relevancia" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                        <label for="relevancia" class="block font-semibold text-sm mb-2" class="text-primary">
                             2. Relevancia (0–5) *
                         </label>
                         <textarea
@@ -329,12 +304,12 @@
                             placeholder="El texto debe responder directamente al objetivo o tema planteado, sin divagaciones. Todo el contenido debe estar enfocado y contribuir al propósito principal, sin información irrelevante."
                             required
                         ></textarea>
-                        <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.7;">Describe qué hace que un texto sea completamente relevante</p>
+                        <p class="mt-1 text-xs" class="text-primary-muted">Describe qué hace que un texto sea completamente relevante</p>
                     </div>
 
                     <!-- Tono -->
                     <div class="mb-6">
-                        <label for="tono" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                        <label for="tono" class="block font-semibold text-sm mb-2" class="text-primary">
                             3. Tono (0–5) *
                         </label>
                         <textarea
@@ -345,12 +320,12 @@
                             placeholder="El tono debe ser apropiado para un entorno académico/profesional: formal, respetuoso y objetivo. El lenguaje debe ser técnico cuando sea necesario pero accesible, manteniendo la seriedad del tema."
                             required
                         ></textarea>
-                        <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.7;">Describe el tono ideal para este tipo de trabajo</p>
+                        <p class="mt-1 text-xs" class="text-primary-muted">Describe el tono ideal para este tipo de trabajo</p>
                     </div>
 
                     <!-- Justificación -->
                     <div class="mb-6">
-                        <label for="justificacion" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                        <label for="justificacion" class="block font-semibold text-sm mb-2" class="text-primary">
                             4. Justificación (0–5) *
                         </label>
                         <textarea
@@ -361,12 +336,12 @@
                             placeholder="Cada afirmación debe estar respaldada con razones sólidas, ejemplos concretos, datos o evidencia. Los argumentos deben estar bien fundamentados y seguir una lógica coherente."
                             required
                         ></textarea>
-                        <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.7;">Describe cómo deben estar justificados los argumentos</p>
+                        <p class="mt-1 text-xs" class="text-primary-muted">Describe cómo deben estar justificados los argumentos</p>
                     </div>
 
                     <!-- Observaciones generales -->
                     <div class="mb-6">
-                        <label for="observaciones" class="block font-semibold text-sm mb-2" style="color: #d5d2c9;">
+                        <label for="observaciones" class="block font-semibold text-sm mb-2" class="text-primary">
                             5. Observaciones generales (0–5) *
                         </label>
                         <textarea
@@ -377,23 +352,23 @@
                             placeholder="El trabajo debe demostrar excelencia general: creatividad apropiada, profundidad en el análisis, corrección gramatical impecable, formato profesional y atención al detalle. Debe ser un trabajo que destaque en calidad."
                             required
                         ></textarea>
-                        <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.7;">Describe aspectos adicionales que mejoran la calidad general</p>
+                        <p class="mt-1 text-xs" class="text-primary-muted">Describe aspectos adicionales que mejoran la calidad general</p>
                     </div>
                 </div>
 
                 <!-- Mensajes de éxito/error -->
                 <div x-show="showSuccess" class="rounded-lg p-4 flex items-center fade-in" style="background-color: rgba(50, 99, 66, 0.3); border: 1px solid #326342;">
-                    <svg class="w-6 h-6 mr-3" style="color: #326342;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 mr-3" class="text-coffee" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                    <span class="font-semibold" style="color: #326342;">¡Actividad creada exitosamente! Redirigiendo...</span>
+                    <span class="font-semibold" class="text-coffee">¡Actividad creada exitosamente! Redirigiendo...</span>
                 </div>
 
                 <div x-show="showError" class="rounded-lg p-4 flex items-start fade-in" style="background-color: rgba(91, 0, 9, 0.5); border: 1px solid #5b0009;">
-                    <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" style="color: #e3b063;" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" class="text-warning" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                     </svg>
-                    <span style="color: #e3b063;" x-text="errorMessage"></span>
+                    <span class="text-warning" x-text="errorMessage"></span>
                 </div>
 
                 <!-- Botones de acción -->
@@ -411,7 +386,7 @@
                             Guardar Actividad
                         </span>
                         <span x-show="loading" class="flex items-center">
-                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5" style="color: #d5d2c9;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5" class="text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>

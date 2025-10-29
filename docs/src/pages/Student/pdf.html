@@ -4,68 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evaluador IA de PDF</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <!-- Alpine.js -->
   <script src="//unpkg.com/alpinejs" defer></script>
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="../../styles/global.css">
+  <link rel="stylesheet" href="../../styles/pages.css">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['CaskaydiaMono', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
   
   <style>
-    @font-face {
-      font-family: 'CaskaydiaMono';
-      src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
-    }
-    
-    body {
-      font-family: 'CaskaydiaMono', monospace;
-      background-color: #20232a;
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.5s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .progress-bar {
-      height: 6px;
-      background: linear-gradient(90deg, #638ce3, #1d6489);
-      border-radius: 3px;
-      transition: width 0.3s ease;
-    }
-    .container-box {
-      background-color: #1d2e33;
-      border-color: #1b3847;
-    }
-    .accent-circle {
-      background-color: #638ce3;
-    }
     .btn-upload {
-      background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%);
+      background: linear-gradient(135deg, var(--color-accent-primary) 0%, var(--color-accent-secondary) 100%);
     }
     .btn-upload:hover {
-      background: linear-gradient(135deg, #7a9ee8 0%, #2a7ba3 100%);
-    }
-    .upload-area {
-      background-color: #1b3847;
-      border-color: #1d6489;
-    }
-    .upload-area:hover {
-      background-color: #1d2e33;
+      background: linear-gradient(135deg, var(--color-accent-hover) 0%, var(--color-accent-secondary) 100%);
     }
   </style>
 </head>
-<body class="text-white font-mono min-h-screen flex flex-col items-center justify-center p-4">
+<body class="text-primary font-mono min-h-screen flex flex-col items-center justify-center p-4">
   <div class="max-w-2xl w-full">
     <!-- Encabezado -->
     <div class="text-center mb-8 fade-in">
-      <h1 class="text-3xl font-bold mb-2" style="color: #d5d2c9;">Recuerda que tiene que estar en formato PDF</h1>
+      <h1 class="text-3xl font-bold mb-2 text-primary">Recuerda que tiene que estar en formato PDF</h1>
     </div>
 
     <!-- Contenedor principal -->
-    <div x-data="pdfUploader()" class="container-box backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden fade-in border">
+    <div x-data="pdfUploader()" class="container-box backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden fade-in border border-student">
       <!-- Área de carga -->
       <div class="p-8 border-b" style="border-color: #1b3847;">
         <div class="flex flex-col items-center justify-center mb-6">
@@ -77,8 +52,38 @@
           <h2 class="text-xl font-semibold" style="color: #d5d2c9;">Subir archivo PDF</h2>
         </div>
 
+        <!-- Información del estudiante -->
+        <div x-show="sessionError" class="mb-6 p-4 rounded-lg" style="background-color: rgba(91, 0, 9, 0.5); border: 1px solid #5b0009;">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" style="color: #e3b063;" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm" style="color: #d5d2c9;" x-text="sessionError"></span>
+          </div>
+        </div>
+
+        <div x-show="!sessionError && studentName" class="mb-6 p-4 rounded-lg" style="background-color: #1b3847; border: 1px solid #1d6489;">
+          <p class="text-sm mb-1" style="color: #d5d2c9; opacity: 0.7;">Subiendo como:</p>
+          <p class="font-semibold" style="color: #638ce3;" x-text="studentName + ' (ID: ' + studentId + ')'"></p>
+        </div>
+
+        <!-- Campo de Workshop ID -->
+        <div class="mb-6" x-show="!sessionError">
+          <label class="block text-sm font-medium mb-2" style="color: #d5d2c9; opacity: 0.9;">
+            ID de la Actividad <span style="color: #e3b063;">*</span>
+          </label>
+          <input 
+            type="text" 
+            x-model="workshopId"
+            placeholder="Ej: ACT001, TALLER-01, WS-2024-1"
+            class="input-field w-full px-4 py-2 rounded-lg border transition"
+            :disabled="uploading"
+          />
+          <p class="mt-1 text-xs" style="color: #d5d2c9; opacity: 0.6;">Ingresa el código de la actividad proporcionado por tu profesor</p>
+        </div>
+
         <!-- Selector de archivos -->
-        <div class="mb-6">
+        <div class="mb-6" x-show="!sessionError">
           <label class="block text-sm font-medium mb-2" style="color: #d5d2c9; opacity: 0.9;">Selecciona un archivo PDF</label>
           <div class="flex items-center justify-center w-full">
             <label class="upload-area flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition">
@@ -103,7 +108,7 @@
         </div>
 
         <!-- Barra de progreso -->
-        <div x-show="uploading" class="mb-6">
+        <div x-show="uploading && !sessionError" class="mb-6">
           <div class="flex justify-between text-sm mb-1" style="color: #d5d2c9;">
             <span>Subiendo archivo...</span>
             <span x-text="uploadProgress + '%'"></span>
@@ -115,9 +120,10 @@
 
         <!-- Botón de subida -->
         <button
+          x-show="!sessionError"
           @click="upload"
-          :disabled="!file || uploading"
-          :class="!file || uploading ? 'opacity-50 cursor-not-allowed' : 'transform hover:scale-105'"
+          :disabled="!file || uploading || !workshopId"
+          :class="!file || uploading || !workshopId ? 'opacity-50 cursor-not-allowed' : 'transform hover:scale-105'"
           class="btn-upload w-full py-3 px-4 font-semibold rounded-lg shadow-md transition-all duration-300 flex items-center justify-center"
         >
           <span x-show="!uploading">Evaluar PDF</span>
@@ -163,6 +169,41 @@
         error: '',
         uploading: false,
         uploadProgress: 0,
+        studentId: '',
+        studentName: '',
+        workshopId: '',
+        sessionError: '',
+
+        init() {
+          // Recuperar información de sesión del estudiante
+          const sessionData = localStorage.getItem('studentSession');
+          
+          if (!sessionData) {
+            this.sessionError = 'No hay sesión activa. Redirigiendo al login...';
+            setTimeout(() => {
+              window.location.href = 'Student.html';
+            }, 2000);
+            return;
+          }
+
+          try {
+            const session = JSON.parse(sessionData);
+            this.studentId = session.studentCode || '';
+            this.studentName = session.studentName || '';
+            
+            if (!this.studentId || !this.studentName) {
+              this.sessionError = 'Datos de sesión incompletos. Redirigiendo al login...';
+              setTimeout(() => {
+                window.location.href = 'Student.html';
+              }, 2000);
+            }
+          } catch (e) {
+            this.sessionError = 'Error al leer sesión. Redirigiendo al login...';
+            setTimeout(() => {
+              window.location.href = 'Student.html';
+            }, 2000);
+          }
+        },
 
         handleFile(event) {
           this.file = event.target.files[0];
@@ -190,6 +231,18 @@
             return;
           }
 
+          // Validar que el workshop_id esté ingresado
+          if (!this.workshopId || this.workshopId.trim() === '') {
+            this.error = 'Por favor ingresa el ID de la actividad (Workshop ID).';
+            return;
+          }
+
+          // Validar sesión del estudiante
+          if (!this.studentId || !this.studentName) {
+            this.error = 'Error de sesión. Por favor inicia sesión nuevamente.';
+            return;
+          }
+
           this.uploading = true;
           this.uploadProgress = 0;
           this.error = '';
@@ -204,10 +257,10 @@
 
           const formData = new FormData();
           formData.append('file', this.file);
-          formData.append('blob_name', this.file.name);          // nombre del blob en Azure
-          formData.append('student_id', '666');           // ID del estudiante
-          formData.append('student_name', 'Satanas');    // nombre del estudiante
-          formData.append('workshop_id', '2');   // ID del taller o actividad
+          formData.append('blob_name', this.file.name);
+          formData.append('student_id', this.studentId);
+          formData.append('student_name', this.studentName);
+          formData.append('workshop_id', this.workshopId.trim());
 
 
           //Fetch para upload pdf
