@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equipo | PDFSSOR</title>
+  <link rel="stylesheet" href="../../styles/global.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['CaskaydiaMono', 'Courier New', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .gradient-navbar {
+      background: linear-gradient(135deg, rgba(29, 46, 51, 0.95), rgba(27, 40, 49, 0.95));
+      border-bottom: 2px solid transparent;
+      border-image: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary)) 1;
+    }
+
+    .logo-gradient {
+      background: linear-gradient(135deg, var(--color-accent-primary) 0%, var(--color-coffee-medium) 50%, var(--color-accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+  </style>
+</head>
+<body class="font-mono flex flex-col min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="gradient-navbar flex justify-between items-center px-8 py-4 backdrop-blur-md shadow-lg">
+    <h1 class="text-2xl logo-gradient">PDFSSOR</h1>
+    <div class="space-x-6 text-secondary">
+      <a href="Home.html" class="hover:text-accent transition">Inicio</a>
+      <a href="Acerca.html" class="hover:text-accent transition">Acerca</a>
+      <a href="Equipo.html" class="hover:text-accent transition text-accent font-semibold">Equipo</a>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-grow px-8 py-16">
+    <div class="max-w-6xl mx-auto">
+      
+      <!-- Título -->
+      <div class="text-center mb-12 fade-in">
+        <h2 class="text-5xl font-extrabold mb-4" style="color: var(--color-text-primary);">
+          Nuestro <span class="gradient-text">Equipo</span>
+        </h2>
+        <div class="h-1 w-24 mx-auto rounded" style="background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));"></div>
+      </div>
+
+      <!-- Contenido en dos columnas -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+        
+        <!-- Texto -->
+        <div class="space-y-6 slide-in-left">
+          <div class="card-coffee p-8">
+            <h3 class="text-2xl font-bold mb-6" style="color: var(--color-coffee-accent);">Quiénes Somos</h3>
+            <div class="space-y-4 text-lg leading-relaxed" style="color: var(--color-text-secondary);">
+              <p>
+                Somos un equipo de tres estudiantes de <span class="font-semibold" style="color: var(--color-accent-primary);">Ciencia de Datos</span> de la <span class="font-semibold" style="color: var(--color-accent-primary);">Universidad Javeriana de Colombia</span>. Antes de iniciar este proyecto, no habíamos desarrollado aplicaciones web, pero siempre nos ha apasionado la inteligencia artificial, su funcionamiento y su impacto en la sociedad.
+              </p>
+              <p>
+                Consideramos que <span class="font-semibold" style="color: var(--color-accent-primary);">Hack4Edu</span> es una excelente oportunidad para aprender y comprender el verdadero alcance que pueden tener las IA en la transformación social.
+              </p>
+              <p>
+                Cuando llegó la convocatoria de Hack4Edu, la vimos como una ocasión ideal para adquirir experiencia en el uso de <span class="font-semibold" style="color: var(--color-coffee-accent);">APIs, computación en la nube y despliegue de aplicaciones web</span>. Además, nos motivó la posibilidad de crear una herramienta que aporte al mejoramiento del sistema educativo.
+              </p>
+              <p>
+                Creemos firmemente que la educación debe ser objetiva y que, más allá de la calificación, lo realmente importante es <span class="font-semibold" style="color: var(--color-success);">fortalecer el proceso de aprendizaje</span>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Imagen -->
+        <div class="slide-in-right">
+          <div class="relative">
+            <div class="absolute inset-0 rounded-2xl blur-xl opacity-30" style="background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));"></div>
+            <img 
+              src="../../../images/grupo.jpg" 
+              alt="Equipo de desarrollo"
+              class="relative rounded-2xl shadow-2xl w-full h-auto border-2"
+              style="border-color: var(--color-coffee-medium);"
+            />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sección adicional con estadísticas/badges -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 slide-in-up">
+        
+        <div class="stat-card text-center">
+          <div class="accent-circle w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+            </svg>
+          </div>
+          <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">Universidad Javeriana</h4>
+          <p class="text-sm" style="color: var(--color-text-secondary);">Ciencia de Datos</p>
+        </div>
+
+        <div class="stat-card text-center">
+          <div style="background: linear-gradient(135deg, var(--color-coffee-medium), var(--color-coffee-dark));" class="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+              <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+            </svg>
+          </div>
+          <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">Hack4Edu 2025</h4>
+          <p class="text-sm" style="color: var(--color-text-secondary);">Hackathon Educativo</p>
+        </div>
+
+        <div class="stat-card text-center">
+          <div style="background: linear-gradient(135deg, #8a9b7a, #6d8066);" class="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full">
+            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+            </svg>
+          </div>
+          <h4 class="text-xl font-bold mb-2" style="color: var(--color-text-primary);">3 Integrantes</h4>
+          <p class="text-sm" style="color: var(--color-text-secondary);">Equipo Multidisciplinario</p>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- PIE -->
+  <footer class="text-center text-muted text-sm py-4 border-t" style="border-color: var(--color-border-primary);">
+    Proyecto Hack4Edu 2025
+  </footer>
+
+  <style>
+    .stat-card {
+      background: linear-gradient(135deg, var(--color-bg-card), var(--color-bg-tertiary));
+      border: 1px solid var(--color-border-secondary);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--color-accent-primary);
+      box-shadow: var(--shadow-accent);
+      transform: translateY(-2px);
+    }
+  </style>
+
+</body>
+</html>
