@@ -1,0 +1,486 @@
+/* ============================================
+   PDFSSOR - Global Styles
+   Paleta de colores base del proyecto
+   ============================================ */
+
+:root {
+  /* Colores principales */
+  --color-bg-primary: #20232a;
+  --color-bg-secondary: #1d2e33;
+  --color-bg-tertiary: #1b2831;
+  --color-bg-card: #252a33;
+  
+  /* Colores de acento - Naranjas/Café */
+  --color-accent-primary: #fbbb5a;
+  --color-accent-secondary: #89421d;
+  --color-accent-hover: #ffc870;
+  --color-accent-dark: #6d3416;
+  
+  /* Tonos café complementarios */
+  --color-coffee-light: #a67c52;
+  --color-coffee-medium: #8b6f47;
+  --color-coffee-dark: #6b5442;
+  --color-coffee-accent: #d4a574;
+  
+  /* Colores de texto */
+  --color-text-primary: #d5d2c9;
+  --color-text-secondary: #a8a29e;
+  --color-text-muted: #6b7280;
+  --color-text-light: #9ca3af;
+  --color-text-coffee: #c9b8a8;
+  
+  /* Colores de borde */
+  --color-border-primary: #2a3f45;
+  --color-border-secondary: #3d4a52;
+  --color-border-accent: #fbbb5a;
+  --color-border-coffee: #8b6f47;
+  
+  /* Estados */
+  --color-success: #8a9b7a;
+  --color-warning: #d4a574;
+  --color-error: #a56b6b;
+  --color-info: #7a8b9b;
+  
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-accent: 0 4px 16px rgba(251, 187, 90, 0.15);
+  --shadow-coffee: 0 4px 16px rgba(166, 124, 82, 0.2);
+}
+
+/* ============================================
+   Reset y configuración base
+   ============================================ */
+
+@font-face {
+  font-family: 'CaskaydiaMono';
+  src: url('../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'CaskaydiaMono', 'Courier New', monospace;
+  background: linear-gradient(135deg, var(--color-bg-primary), var(--color-bg-secondary));
+  color: var(--color-text-primary);
+  min-height: 100vh;
+}
+
+/* ============================================
+   Animaciones
+   ============================================ */
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes slideInLeft {
+  from { 
+    opacity: 0; 
+    transform: translateX(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes slideInRight {
+  from { 
+    opacity: 0; 
+    transform: translateX(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+@keyframes slideInUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.5s ease-out;
+}
+
+/* ============================================
+   Componentes reutilizables
+   ============================================ */
+
+/* Contenedores */
+.container-box {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--color-accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-accent);
+}
+
+/* Botones principales */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+  color: var(--color-text-primary);
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-accent-hover), var(--color-accent-secondary));
+  transform: scale(1.05);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Botón secundario */
+.btn-secondary {
+  background-color: var(--color-bg-card);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-border-secondary);
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent-primary);
+  background-color: var(--color-bg-secondary);
+  transform: scale(1.02);
+}
+
+/* Botón con tono café */
+.btn-coffee {
+  background: linear-gradient(135deg, var(--color-coffee-medium), var(--color-coffee-dark));
+  color: var(--color-text-primary);
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-coffee);
+}
+
+.btn-coffee:hover {
+  background: linear-gradient(135deg, var(--color-coffee-light), var(--color-coffee-medium));
+  transform: scale(1.05);
+}
+
+.btn-coffee:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Botón de logout/cerrar */
+.btn-logout {
+  background-color: transparent;
+  color: var(--color-accent-primary);
+  border: 2px solid var(--color-accent-secondary);
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+  background-color: var(--color-accent-secondary);
+  color: var(--color-text-primary);
+  border-color: var(--color-accent-primary);
+}
+
+/* Campos de entrada */
+.input-field {
+  background-color: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border-secondary);
+  color: var(--color-text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(251, 187, 90, 0.1);
+}
+
+.input-field::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.input-field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Área de texto */
+.textarea-field {
+  background-color: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border-secondary);
+  color: var(--color-text-primary);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.textarea-field:focus {
+  outline: none;
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(251, 187, 90, 0.1);
+}
+
+/* Área de carga de archivos */
+.upload-area {
+  background-color: var(--color-bg-tertiary);
+  border: 2px dashed var(--color-border-secondary);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.upload-area:hover {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-accent-primary);
+}
+
+/* Círculo de acento (avatares, iconos) */
+.accent-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-accent);
+}
+
+/* Barra de progreso */
+.progress-bar {
+  height: 6px;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-secondary));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progress-container {
+  width: 100%;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+/* Mensajes de estado */
+.alert {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  display: flex;
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.alert-success {
+  background-color: rgba(138, 155, 122, 0.15);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.alert-warning {
+  background-color: rgba(212, 165, 116, 0.15);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+
+.alert-error {
+  background-color: rgba(165, 107, 107, 0.15);
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.alert-info {
+  background-color: rgba(122, 139, 155, 0.15);
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+
+/* Box de información */
+.info-box {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+/* Badge/Etiqueta */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-secondary);
+}
+
+.badge-accent {
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+  color: var(--color-bg-primary);
+  border: none;
+}
+
+/* Divisor */
+.divider {
+  height: 1px;
+  background-color: var(--color-border-primary);
+  margin: 1.5rem 0;
+}
+
+/* ============================================
+   Utilidades
+   ============================================ */
+
+.text-accent {
+  color: var(--color-accent-primary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-coffee {
+  color: var(--color-coffee-accent);
+}
+
+.bg-primary {
+  background-color: var(--color-bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-bg-secondary);
+}
+
+.bg-card {
+  background-color: var(--color-bg-card);
+}
+
+.bg-coffee {
+  background: linear-gradient(135deg, var(--color-coffee-medium), var(--color-coffee-dark));
+}
+
+.border-accent {
+  border-color: var(--color-accent-primary);
+}
+
+.border-coffee {
+  border-color: var(--color-coffee-medium);
+}
+
+/* Tabla con acentos café */
+.table-header-coffee {
+  background: linear-gradient(135deg, var(--color-coffee-dark), var(--color-bg-card));
+  color: var(--color-coffee-accent);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-coffee-medium);
+}
+
+.table-row-hover:hover {
+  background-color: rgba(166, 124, 82, 0.1);
+  border-left: 3px solid var(--color-coffee-medium);
+}
+
+/* Card con borde café */
+.card-coffee {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-coffee-dark);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card-coffee:hover {
+  border-color: var(--color-coffee-light);
+  box-shadow: var(--shadow-coffee);
+  transform: translateY(-2px);
+}
+
+/* Espaciado responsive */
+@media (max-width: 768px) {
+  .container-box {
+    padding: 1.5rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+}

@@ -4,39 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PDFSSOR | Evaluador Inteligente</title>
+  <link rel="stylesheet" href="../../styles/global.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @font-face {
-      font-family: 'CaskaydiaMono';
-      src: url('../../../public/fonts/CaskaydiaMonoNerdFontMono-Regular.ttf') format('truetype');
-      font-weight: 400;
-      font-style: normal;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['CaskaydiaMono', 'Courier New', 'monospace']
+          }
+        }
+      }
     }
-
-    body {
-      font-family: 'CaskaydiaMono', monospace;
-      background: linear-gradient(135deg, #20232a, #1d2e33);
-      color: #d5d2c9;
-      min-height: 100vh;
-    }
-
-    .btn {
-      transition: transform 0.2s ease, background 0.3s ease;
-    }
-    .btn:hover {
-      transform: scale(1.05);
-    }
-  </style>
+  </script>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="font-mono flex flex-col min-h-screen">
 
   <!-- NAVBAR -->
-  <nav class="flex justify-between items-center px-8 py-4 bg-[#1d2e33]/80 backdrop-blur-md shadow-lg">
-    <h1 class="text-2xl font-bold text-[#fbbb5a]">PDF<span class="text-2xl font-extrabold" style="color: #89421d;">SSOR</span></h1>
-    <div class="space-x-6 text-gray-300">
-      <a href="#" class="hover:text-white transition">Inicio</a>
-      <a href="#" class="hover:text-white transition">Acerca</a>
-      <a href="#" class="hover:text-white transition">Equipo</a>
+  <nav class="flex justify-between items-center px-8 py-4 backdrop-blur-md shadow-lg" style="background-color: rgba(29, 46, 51, 0.8);">
+    <h1 class="text-2xl font-bold text-accent">PDF<span class="text-2xl font-extrabold" style="color: var(--color-accent-secondary);">SSOR</span></h1>
+    <div class="space-x-6 text-secondary">
+      <a href="#" class="hover:text-accent transition">Inicio</a>
+      <a href="#" class="hover:text-accent transition">Acerca</a>
+      <a href="#" class="hover:text-accent transition">Equipo</a>
     </div>
   </nav>
 
@@ -46,39 +36,37 @@
     <!-- Texto principal -->
     <div class="max-w-lg space-y-6 fade-in">
       <h2 class="text-5xl font-extrabold leading-tight">
-        Evaluaciones inteligentes con <span class="text-[#fbbb5a]">PDF<span class="text-5xl font-extrabold" style="color: #89421d;">SSOR</span></span>
+        Evaluaciones inteligentes con <span class="text-accent">PDF<span class="text-5xl font-extrabold" style="color: var(--color-accent-secondary);">SSOR</span></span>
       </h2>
-      <p class="text-gray-400 text-lg">
+      <p class="text-muted text-lg">
         Plataforma basada en inteligencia artificial que permite a los docentes publicar sus rúbricas,
         evaluar automáticamente evidencias en PDF y ofrecer retroalimentación inmediata y objetiva.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
         <a href="../Student/Student.html">
-          <button class="btn px-6 py-3 bg-[#89421d] hover:bg-[#7a9ee8] rounded-lg font-semibold shadow-lg">
+          <button class="btn-primary">
             Ingreso Alumnos
           </button>
         </a>
         <a href="../Teacher/TeacherHome.html">
-          <button class="btn px-6 py-3 bg-[#89421d] hover:bg-[#3d7a52] rounded-lg font-semibold shadow-lg">
-            Ingreso Profesores
+          <button class="btn-primary">
+            Ingreso Docentes
           </button>
         </a>
       </div>
     </div>
 
     <!-- Imagen / ícono a la derecha -->
-    <div class="relative flex flex-col items-center justify-center">
-      
-        <span class="text-9xl font-extrabold" style="color: #fbbb5a;">PDF</span>
-        <span class="text-8xl font-extrabold" style="color: #89421d;">SSOR</span>
-      </div>
+    <div class="relative flex flex-col items-center justify-center slide-in-right">
+      <span class="text-9xl font-extrabold text-accent">PDF</span>
+      <span class="text-8xl font-extrabold" style="color: var(--color-accent-secondary);">SSOR</span>
     </div>
 
   </main>
 
   <!-- PIE -->
-  <footer class="text-center text-gray-500 text-sm py-4 border-t border-[#2a3f45]">
+  <footer class="text-center text-muted text-sm py-4 border-t" style="border-color: var(--color-border-primary);">
     Proyecto Hack4Edu 2025
   </footer>
 
