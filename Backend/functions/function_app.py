@@ -14,6 +14,7 @@ from saveTable import save_to_table_storage
 from pdfEvaluation import evaluate_pdf
 from utils.blob_client import get_blob_client
 from retrieveGrades import retrieve_grades
+from retrieveGrades import get_student_grades
 
 app = func.FunctionApp()
 
@@ -142,6 +143,50 @@ def getGrades(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(json.dumps(grades), status_code=200, mimetype="application/json")
     except Exception as e:
         logging.exception("Unhandled exception in getGrades")
+        return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
+    
+@app.route(route="getGradeStudent", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
+def getGradeStudent(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Get Grade Student triggered')
+    try:
+        content_type = req.headers.get('content-type', '')
+        
+        if 'multipart/form-data' in content_type:
+            # Parse multipart form data using cgi module
+            body = req.get_body()
+            environ = {
+                'REQUEST_METHOD': 'POST',
+                'CONTENT_TYPE': content_type,
+                'CONTENT_LENGTH': str(len(body))
+            }
+            
+            form = cgi.FieldStorage(
+                fp=io.BytesIO(body),
+                environ=environ,
+                keep_blank_values=True
+            )
+            
+            student_id = form.getvalue('student_id')
+
+        else:
+            return func.HttpResponse(json.dumps({"error": "multipart/form-data content-type required"}), status_code=400, mimetype="application/json")
+
+        if not student_id:
+            return func.HttpResponse(json.dumps({"error": "student_id is required"}), status_code=400, mimetype="application/json")
+
+        grade = get_student_grades(student_id)
+        if grade is None:
+            return func.HttpResponse(json.dumps({"error": "Grade not found"}), status_code=404, mimetype="application/json")
+
+        return func.HttpResponse(
+            json.dumps({"student_id": student_id, "grade": grade}),
+            status_code=200,
+            mimetype="application/json"
+        )
+    except ValueError:
+        return func.HttpResponse(json.dumps({"error": "bad request"}), status_code=400, mimetype="application/json")
+    except Exception as e:
+        logging.exception("Unhandled exception in getGradeStudent")
         return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
 
 # health check endpoint
