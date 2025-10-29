@@ -30,4 +30,8 @@ Descripción general: Recibe la información de los formularios para actualizar 
 
 Proceso:
 * Header de la rúbrica (valida al igual que la anterior función el tipo)
-* 
+* Se comunica con el blob client y sube los cambios a la rúbrica
+#### Excepciones
+*    Bad request
+*    Excepciones generales
+
