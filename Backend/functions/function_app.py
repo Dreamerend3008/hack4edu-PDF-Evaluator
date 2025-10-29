@@ -13,6 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from saveTable import save_to_table_storage
 from pdfEvaluation import evaluate_pdf
 from utils.blob_client import get_blob_client
+from retrieveGrades import retrieve_grades
 
 app = func.FunctionApp()
 
@@ -86,9 +87,9 @@ def uploadPDF(req: func.HttpRequest) -> func.HttpResponse:
         logging.exception("Unhandled exception in uploadPDF")
         return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
 
-@app.route(route="uploadRubica", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
+@app.route(route="uploadrubrica", methods=["POST"], auth_level=func.AuthLevel.ANONYMOUS)
 def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Rubica Upload triggered')
+    logging.info('rubrica Upload triggered')
     try:
         content_type = req.headers.get('content-type', '')
         
@@ -107,7 +108,7 @@ def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
                 keep_blank_values=True
             )
             
-            container = 'rubicas'
+            container = 'rubricas'
             blob_name = form.getvalue('workshop_id')
             blob_name = blob_name + '.txt'
 
@@ -132,6 +133,17 @@ def uploadRubrica(req: func.HttpRequest) -> func.HttpResponse:
     except Exception as e:
         logging.exception("Unhandled exception in uploadRubrica")
         return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
+
+@app.route(route="getGrades", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
+def getGrades(req: func.HttpRequest) -> func.HttpResponse:
+    logging.info('Get Grades triggered')
+    try:
+        grades = retrieve_grades()
+        return func.HttpResponse(json.dumps(grades), status_code=200, mimetype="application/json")
+    except Exception as e:
+        logging.exception("Unhandled exception in getGrades")
+        return func.HttpResponse(json.dumps({"error": str(e)}), status_code=500, mimetype="application/json")
+
 # health check endpoint
 @app.route(route="health", methods=["GET"], auth_level=func.AuthLevel.ANONYMOUS)
 def HealthCheck(req: func.HttpRequest) -> func.HttpResponse:
