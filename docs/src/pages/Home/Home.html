@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDFSSOR | Evaluador Inteligente de PDF</title>
+  <title>PDFSSOR | Evaluador Inteligente</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <style>
     @font-face {
       font-family: 'CaskaydiaMono';
@@ -16,77 +15,71 @@
 
     body {
       font-family: 'CaskaydiaMono', monospace;
-      background-color: #20232a;
+      background: linear-gradient(135deg, #20232a, #1d2e33);
+      color: #d5d2c9;
+      min-height: 100vh;
     }
 
-    .fade-in {
-      animation: fadeIn 0.5s ease-in-out;
+    .btn {
+      transition: transform 0.2s ease, background 0.3s ease;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .btn-students {
-      background: linear-gradient(135deg, #638ce3 0%, #1d6489 100%);
-    }
-    .btn-students:hover {
-      background: linear-gradient(135deg, #7a9ee8 0%, #2a7ba3 100%);
-    }
-
-    .btn-teachers {
-      background: linear-gradient(135deg, #326342 0%, #005b52 100%);
-    }
-    .btn-teachers:hover {
-      background: linear-gradient(135deg, #3d7a52 0%, #007a6e 100%);
+    .btn:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
+<body class="flex flex-col min-h-screen">
 
-<body class="text-white font-mono flex flex-col items-center justify-center min-h-screen p-6 space-y-8">
-
-  <!-- Encabezado -->
-  <header class="text-center fade-in">
-    <h1 class="text-5xl font-bold mb-2" style="color:#fbbb5a;">PDFSSOR</h1>
-    <p class="text-lg text-gray-300">Evaluaciones inteligentes, rápidas y objetivas</p>
-  </header>
-
-  <!-- Contenedor principal -->
-  <main style="background-color: #1d2e33;" 
-        class="backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden p-8 border max-w-md w-full fade-in"
-        style="border-color: #1b3847;">
-        
-    <h2 class="text-2xl mb-6 text-center font-bold" style="color: #d5d2c9;">Ingreso al Sistema</h2>
-
-    <p class="text-sm text-gray-400 text-center mb-6">
-      Una plataforma basada en inteligencia artificial que permite a docentes y estudiantes
-      gestionar, evaluar y mejorar actividades académicas con retroalimentación automatizada.
-    </p>
-
-    <div class="space-y-4">
-      <a href="../Student/Student.html" class="block">
-        <button class="btn-students w-full px-6 py-3 rounded-lg text-lg font-semibold transition transform hover:scale-105 shadow-lg">
-          Ingreso Alumnos
-        </button>
-      </a>
-
-      <a href="../Teacher/TeacherHome.html" class="block">
-        <button class="btn-teachers w-full px-6 py-3 rounded-lg text-lg font-semibold transition transform hover:scale-105 shadow-lg">
-          Ingreso Profesores
-        </button>
-      </a>
+  <!-- NAVBAR -->
+  <nav class="flex justify-between items-center px-8 py-4 bg-[#1d2e33]/80 backdrop-blur-md shadow-lg">
+    <h1 class="text-2xl font-bold text-[#fbbb5a]">PDF<span class="text-2xl font-extrabold" style="color: #89421d;">SSOR</span></h1>
+    <div class="space-x-6 text-gray-300">
+      <a href="#" class="hover:text-white transition">Inicio</a>
+      <a href="#" class="hover:text-white transition">Acerca</a>
+      <a href="#" class="hover:text-white transition">Equipo</a>
     </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <main class="flex flex-col lg:flex-row items-center justify-center flex-grow px-8 py-16 lg:py-0 gap-12 text-center lg:text-left">
+
+    <!-- Texto principal -->
+    <div class="max-w-lg space-y-6 fade-in">
+      <h2 class="text-5xl font-extrabold leading-tight">
+        Evaluaciones inteligentes con <span class="text-[#fbbb5a]">PDF<span class="text-5xl font-extrabold" style="color: #89421d;">SSOR</span></span>
+      </h2>
+      <p class="text-gray-400 text-lg">
+        Plataforma basada en inteligencia artificial que permite a los docentes publicar sus rúbricas,
+        evaluar automáticamente evidencias en PDF y ofrecer retroalimentación inmediata y objetiva.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <a href="../Student/Student.html">
+          <button class="btn px-6 py-3 bg-[#89421d] hover:bg-[#7a9ee8] rounded-lg font-semibold shadow-lg">
+            Ingreso Alumnos
+          </button>
+        </a>
+        <a href="../Teacher/TeacherHome.html">
+          <button class="btn px-6 py-3 bg-[#89421d] hover:bg-[#3d7a52] rounded-lg font-semibold shadow-lg">
+            Ingreso Profesores
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <!-- Imagen / ícono a la derecha -->
+    <div class="relative flex flex-col items-center justify-center">
+      
+        <span class="text-9xl font-extrabold" style="color: #fbbb5a;">PDF</span>
+        <span class="text-8xl font-extrabold" style="color: #89421d;">SSOR</span>
+      </div>
+    </div>
+
   </main>
 
-  <!-- Frase inspiradora -->
-  <section class="text-center text-gray-400 fade-in">
-    <p class="italic">"Optimiza tu tiempo, mejora tus resultados."</p>
-  </section>
-
-  <!-- Pie de página -->
-  <footer class="text-gray-500 text-sm text-center mt-8 fade-in">
-    <p>Proyecto académico - Hack4Edu 2025</p>
+  <!-- PIE -->
+  <footer class="text-center text-gray-500 text-sm py-4 border-t border-[#2a3f45]">
+    Proyecto Hack4Edu 2025
   </footer>
 
 </body>

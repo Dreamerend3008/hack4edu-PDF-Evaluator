@@ -137,7 +137,7 @@
             }
         },
 
-        saveActivity() {
+        async saveActivity() {
             // Validar que todos los campos estén completos
             if (!this.workshopId || !this.claridad || !this.relevancia || !this.tono || !this.justificacion || !this.observaciones) {
                 this.showError = true;
@@ -149,8 +149,12 @@
             }
 
             this.loading = true;
+            this.showError = false;
 
-            // Crear objeto de actividad
+            // Formatear rúbrica como string
+            const rubricaString = this.formatRubrica();
+
+            // Crear objeto de actividad para localStorage
             const activity = {
                 workshopId: this.workshopId,
                 criteria: {
@@ -160,7 +164,7 @@
                     justificacion: this.justificacion,
                     observaciones: this.observaciones
                 },
-                rubricaFormateada: this.formatRubrica(),
+                rubricaFormateada: rubricaString,
                 createdAt: Date.now()
             };
 
@@ -169,7 +173,42 @@
                 const session = JSON.parse(localStorage.getItem('teacherSession'));
                 const teacherCode = session.teacherCode;
 
-                // Obtener actividades existentes
+                // Enviar al backend
+                const URL = 'https://fahack4edu-b7cfhhbtczb0gndq.westus3-01.azurewebsites.net/api/uploadRubica';
+                
+                const formData = new FormData();
+                formData.append('workshop_id', this.workshopId);
+                formData.append('text', rubricaString);
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
+
+                const res = await fetch(URL, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!res.ok) {
+                    let textBody = '';
+                    try {
+                        textBody = await res.text();
+                    } catch (e) {
+                        textBody = '<no se pudo leer el body de error>';
+                    }
+                    throw new Error(`Error del servidor: ${res.status} ${res.statusText} - ${textBody}`);
+                }
+
+                // Si la respuesta es exitosa, guardar en localStorage
+                const ct = res.headers.get('content-type') || '';
+                if (ct.includes('application/json')) {
+                    const data = await res.json();
+                    console.log('Respuesta del servidor:', data);
+                }
+
+                // Guardar en localStorage para el profesor
                 let activities = [];
                 const saved = localStorage.getItem('teacherActivities_' + teacherCode);
                 if (saved) {
@@ -187,11 +226,10 @@
                     window.location.href = 'TeacherHome.html';
                 }, 1500);
 
-            } catch (e) {
+            } catch (error) {
                 this.showError = true;
-                this.errorMessage = 'Error al guardar la actividad. Por favor intenta de nuevo.';
-                console.error('Error:', e);
-            } finally {
+                this.errorMessage = `Error al guardar la actividad: ${error.message}`;
+                console.error('Error:', error);
                 this.loading = false;
             }
         },
